@@ -3,6 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
 import React from "react";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import { Lattice } from "./lattice";
 
 function Table({ data }: { data: { headers: string[]; rows: string[][] } }) {
   return (
@@ -96,8 +99,20 @@ function Pre({ children }: { children: { props: { children: string } } }) {
   );
 }
 
-function slugify(str: string): string {
-  return str
+function nodeToText(node: React.ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(nodeToText).join("");
+  if (React.isValidElement(node)) {
+    return nodeToText(
+      (node.props as { children?: React.ReactNode }).children,
+    );
+  }
+  return "";
+}
+
+function slugify(node: React.ReactNode): string {
+  return nodeToText(node)
     .toLowerCase()
     .trim()
     .replace(/\s+/g, "-")
@@ -116,7 +131,7 @@ function createHeading(level: number) {
     6: "text-sm",
   };
 
-  const Heading = ({ children }: { children: string }) => {
+  const Heading = ({ children }: { children?: React.ReactNode }) => {
     const slug = slugify(children);
     return React.createElement(
       `h${level}`,
@@ -144,6 +159,7 @@ const components = {
   code: Code,
   pre: Pre,
   Table: Table,
+  Lattice: Lattice,
 };
 
 export function CustomMDX(props: MDXRemoteProps) {
@@ -151,6 +167,14 @@ export function CustomMDX(props: MDXRemoteProps) {
     <MDXRemote
       source={props.source}
       components={{ ...components, ...(props.components || {}) }}
+      options={{
+        mdxOptions: {
+          remarkPlugins: [remarkMath],
+          rehypePlugins: [[rehypeKatex, { strict: false }]],
+        },
+        blockJS: false,
+        blockDangerousJS: true,
+      }}
     />
   );
 }
