@@ -1,0 +1,65 @@
+---
+title: 'Why lattice cryptography feels strange at first'
+publishedAt: '2026-05-14'
+summary: 'Set the readers expectations before walking into lattices.'
+chapter: '1'
+---
+
+Lattice cryptography starts from a different place than RSA or ECC.
+
+RSA is built around modular arithmetic and factoring. ECC is built around elliptic curve groups and scalar multiplication. Lattice cryptography is built around grids, vectors, matrices, modular arithmetic, and small errors.
+
+That shift can make the subject feel harder than it is. But at it's core, a basic understanding of mathematics gives us a great start. A lattice is a discrete grid of points, a vector is a list of numbers, a matrix is a way to handle many linear equations at once, modular arithmetic is arithmetic with wraparound, and noise is a small error added on purpose. Note, that we will be going through each of these topics on this course.
+
+The main difficulty I hear when folks try to learn about lattice cryptography is that it is laden with jargon and complex abstract formulas. On top of that, we typically deal in "high-dimensions" which sounds more sci-fi than it really is.
+
+The difficulty is that these ideas are used together, usually in high dimension.
+
+This course covers everything you need to know to understand lattices.
+
+First we cover the maths needed:
+
+```text
+vectors
+matrices
+modular arithmetic
+sampling
+noise
+```
+
+Then we cover lattices:
+
+```text
+basis vectors
+integer combinations
+different bases for the same lattice
+short vectors
+distance
+closest points
+```
+
+Then we move on to the two core problems:
+
+```text
+SIS: find a short solution to a modular equation
+LWE: recover or distinguish noisy modular equations
+```
+
+Then we explain the structure used in real schemes:
+
+```
+polynomials
+rings
+modules
+compression
+rounding
+```
+
+After that, we look at schemes like ML-KEM, ML-DSA, and Falcon.
+
+As a general rule, we will not avoid the maths, but we will introdcue it slowly and explain it simply. Virtually all of the notation used in this course will be explained.
+
+
+By the end, the goal is to understand the shape of modern lattice schemes: what the public data is, what the secret data is, where the noise appears, why rounding works, what can fail, and how this connects to post-quantum security.
+
+Let's dive in.

@@ -1,6 +1,357 @@
 ---
 title: 'Vectors, length, and "short" things'
-publishedAt: '2025-07-13'
-summary: 'Why is it important to learn about lattice cryptography?'
+publishedAt: '2026-05-14'
+summary: 'Vectors, norms, and what cryptographers mean by short.'
 chapter: '2'
 ---
+
+> Before we dive in, the next few chapters will assume you have a very basic level of mathematics - the goal is to start slow and layer on more complexity as we go. If you find this stuff obvious. Feel free to skip to Part 2.
+
+A vector is a list of numbers. In lattice cryptography, vectors are everywhere. A secret key might be a vector. An error term might be a vector. A lattice point is a vector. A signature may contain vectors that need to be 'short'.
+
+By the end of this chapter, you should understand what a vector is, how to measure its length, what ||x|| means, what 'short' usually means, and why there is more than one way to talk about size.
+
+## Vectors are a list of numbers
+
+A vector is an ordered list of numbers. For example:
+
+```
+[3, 4]
+```
+
+This is a vector with two entries. Another example:
+
+```
+[2, -1, 5]
+```
+
+This is a vector with three entries.
+
+Order matters. These are different vectors:
+
+```
+[3, 4]
+[4, 3]
+```
+
+In notation, we often write a vector as:
+
+$$
+x = (3, 4)
+$$
+
+Read this as "x is the vector with entries 3 and 4".
+
+A vector can have two entries, three entries, or thousands of entries.
+
+$$
+x = (x1, x2, ..., xn)
+$$
+
+Again, you can read this as "x is a vector with n entries. The entries are called x1, x2, up to xn". The ... means "continue the same pattern". We will see this a lot as lattice cryptography usually works with vectors that are far too large to write out fully.
+
+## Vectors on a grid
+
+A vector can be read as a list of numbers. It can also be drawn as an arrow on a grid.
+
+The vector $ x = (3, 4) $ can be drawn as an arrow that starts at the origin `(0, 0)` and ends at the location `(3, 4)`.
+
+Read this as:
+
+"Move 3 steps across and 4 steps up."
+
+<Lattice
+  basis={[[1, 0], [0, 1]]}
+  vectors={[{ v: [3, 4], label: "x" }]}
+  caption="The vector (3, 4), drawn as an arrow from the origin to (3, 4)"
+/>
+
+Strictly speaking, the vector is not the point `(3, 4)`. The vector is the displacement: 3 across and 4 up. The point `(3, 4)` is where that displacement lands if we start at the origin.
+
+In many maths and cryptography texts, vectors and points are often identified with each other once an origin has been chosen. That shortcut is usually harmless.
+
+It is easy to visualise this in 2D and [3D](https://www.math3d.org/vectors). For vectors with hundreds of entries, we cannot draw the picture directly. The same rules still apply: a vector is still a list of coordinates, it still describes a displacement from the origin, and it still has a measurable length.
+
+## Vectors have length
+
+The visualisation above should make it clear that vectors have a length. For the vector $ x = (3, 4) $ the length is the straight-line distance from $(0, 0)$ to $(3, 4)$.
+
+The horizontal part has length 3, the vertical part has length 4. Using the Pythagorean theorem:
+
+$$
+length² = 3² + 4² \\
+length² = 9 + 16 \\
+length² = 25 \\
+length = 5
+$$
+
+In notation, we write this as:
+
+$$
+||x|| = 5
+$$
+
+which you can read as "the norm of x is 5" or more simply "the length of x is 5". Generally, the double bars ||x|| mean "the length of the vector x".
+
+## Euclidean norm
+
+The most common vector length is called the Euclidean norm. It's the the normal straight-line distance you already know from geometry.
+
+For a two-entry vector $x = (x1, x2)$ the Euclidean norm is $||x|| = \sqrt{x1² + x2²}$
+
+## Length in more than two dimensions
+
+The same rule works for longer vectors. For a three-entry vector $x = (2, 3, 6)$ the Euclidean norm is:
+
+$$
+||x|| = \sqrt{2² + 3² + 6²}\\
+      = \sqrt{4 + 9 + 36}\\
+      = \sqrt{49}\\
+      = 7
+$$
+
+So $||(2, 3, 6)|| = 7$
+
+For a vector with n entries $x = (x1, x2, ..., xn)$ the Euclidean norm is
+
+$$
+||x|| = \sqrt{x1² + x2² + ... + xn²}
+$$
+
+## Squared length
+
+Sometimes cryptographers work with the squared norm instead:
+
+$$
+||x||² = x1² + x2² + ... + xn²
+$$
+
+You can read this as "the squared length of x is the sum of the squared entries". This avoids taking a square root at the end and for many checks, comparing the squared lengths is enough. For example, suppose you want to check whether $||x|| <= 10$, You can instead check $||x||² <= 100$. This is often easier in code.
+
+## Coefficient size and the infinity norm
+
+The Euclidean norm measures the size of the whole vector but sometimes we need a different question:
+
+"What is the largest individual entry?"
+
+This can be important because lattice cryptography often puts bounds on individual coefficients. A scheme might require every coefficient of a secret, error term, or signature component to stay within a small range.
+
+For example:
+
+$$
+x = (1, -7, 2, 3)
+$$
+
+The coefficients are:
+
+$$
+1, -7, 2, 3
+$$
+
+The largest coefficient by absolute value is `7`.
+
+Absolute value means the size of a number without its sign:
+
+$$
+|-7| = 7
+$$
+
+$$
+|3| = 3
+$$
+
+$$
+|0| = 0
+$$
+
+So for $x = (1, -7, 2, 3)$ the absolute values of the coefficients are $1, 7, 2, 3$ and the largest one is $7$.
+
+The formal name for this measurement is the infinity norm.
+
+It is written as:
+
+$$
+\|x\|_\infty = 7
+$$
+
+Read this as "the infinity norm of `x` is `7`".
+
+Or more simply, "the largest absolute coefficient of `x` is `7`".
+
+For a vector:
+
+$$
+x = (x_1, x_2, \ldots, x_n)
+$$
+
+the infinity norm is:
+
+$$
+\|x\|_\infty = \max(|x_1|, |x_2|, \ldots, |x_n|)
+$$
+
+For example:
+
+$$
+x = (-4, 0, 9, -2)
+$$
+
+Then:
+
+$$
+\|x\|_\infty = \max(|-4|, |0|, |9|, |-2|)\\
+= \max(4, 0, 9, 2)\\
+= 9
+$$
+
+So:
+
+$$
+\|(-4, 0, 9, -2)\|_\infty = 9
+$$
+
+## Euclidean norm versus infinity norm
+
+The Euclidean norm and the infinity norm measure different things.
+
+The Euclidean norm asks "how large is the whole vector?" whereas the infinity norm asks "what is the largest individual coefficient?"
+
+Take this vector:
+
+$$
+a = (3, 4)
+$$
+
+Its Euclidean norm is:
+
+$$
+\|a\| = \sqrt{3^2 + 4^2}\\
+= 5
+$$
+
+Its infinity norm is:
+
+$$
+\|a\|_\infty = \max(|3|, |4|)\\
+= 4
+$$
+
+So:
+
+$$
+\|a\| = 5\\
+\|a\|_\infty = 4
+$$
+
+Now compare it with:
+
+$$
+b = (5, 0)
+$$
+
+The Euclidean norm is:
+
+$$
+\|b\| = \sqrt{5^2 + 0^2}\\
+= 5
+$$
+
+The infinity norm is:
+
+$$
+\|b\|_\infty = \max(|5|, |0|)\\
+= 5
+$$
+
+Both vectors have the same Euclidean norm:
+
+$$
+\|a\| = \|b\| = 5
+$$
+
+But they have different infinity norms:
+
+$$
+\|a\|_\infty = 4\\
+\|b\|_\infty = 5
+$$
+
+The reverse can also happen. A vector can have very small coefficients but still have a meaningful Euclidean norm because it has many entries.
+
+For example:
+
+$$
+c = (1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+$$
+
+Every coefficient is small. The infinity norm is $\|c\|_\infty = 1$ but the Euclidean norm is $\|c\| = \sqrt{10} \approx3.16$. So although the largest coefficient is only `1`, the whole vector has length about `3.16`. This gap gets larger in higher dimensions, small coefficients do not automatically mean tiny Euclidean length.
+
+In lattice cryptography, both measurements are useful. A coefficient bound controls each entry:
+
+$$
+\|x\|_\infty \leq B
+$$
+
+This can be read this as "every coefficient of `x` has absolute value at most `B`". A Euclidean norm bound controls the total vector length:
+
+$$
+\|x\| \leq B
+$$
+
+Which says that "the whole vector `x` has length at most `B`".
+
+## What "short" means
+
+Cryptographers often say a vector is "short" we now know could mean different things. Usually one of $\|x\| \text{ is small}$ or $\|x\|_\infty \text{ is small}$. Sometimes it means both.
+
+## Why "short" appears in lattice cryptography
+
+Lattice cryptography often works with small secret values hidden inside larger public structures - this won't make complete sense right now but don't worry about that. For example, a secret vector might be sampled with small coefficients:
+
+$$
+s = (-1, 0, 1, 1, -1, 0)
+$$
+
+`s` may be considered short here compared to some larger public structure because it's coefficients are small and it's Euclidean length is small. The security of lattices often relies on the fact that recovering the short secret from the public value is hard. You do not need to understand this yet. For now, the point is that lattice cryptography often hides short vectors inside larger algebraic objects.
+
+## Bounds
+
+We have already described bounds above but for completeness, bounds are how "short" becomes precise. Without a bound, "short" is just a description, whereas with a bound, it becomes a condition that can be checked.
+
+For example, let's set a constraint such that the Euclidean length of `x` must be at most `10`:
+
+$$
+\|x\| \leq 10
+$$
+
+This accepts $x = (6, 8)$ and rejects $x = (8, 9)$
+
+A coefficient bound works similarly.
+
+## Why this shows up in implementations
+
+Even when a lattice scheme is described mathematically, implementations check these sizes directly. For example, signing code may reject a sampled vector if it is too large:
+
+```python
+if norm_squared(x) > B_squared:
+    reject
+```
+
+or 
+
+```python
+if max_abs_coefficient(x) > gamma:
+    reject
+```
+
+## What to remember
+
+* A vector is an ordered list of numbers.
+* The dimension of a vector is the number of entries it has.
+* $|x|$ usually means the Euclidean norm/length.
+* To compute $|x|$, square each entry, add the results, then take the square root.
+* $|x|^2$ is the squared length, often easier to use in code.
+* $|x|_\infty$ means the largest absolute coefficient of the vector.
+* "Short" means small under a specific size measurement.
+* In lattice cryptography, "short" usually means small Euclidean norm, small infinity norm, or both.
+* A high-dimensional vector can have small coefficients but still have a meaningful Euclidean length.
