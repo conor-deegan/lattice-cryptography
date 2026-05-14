@@ -15,6 +15,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { groupChaptersByPart } from "../chapter/parts";
 
 type ChapterItem = {
   slug: string;
@@ -31,6 +32,8 @@ export function ChapterSidebar({ chapters }: { chapters: ChapterItem[] }) {
     if (isMobile) setOpenMobile(false);
   };
 
+  const grouped = groupChaptersByPart(chapters);
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -45,31 +48,33 @@ export function ChapterSidebar({ chapters }: { chapters: ChapterItem[] }) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Chapters</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {chapters.map((chapter) => (
-                <SidebarMenuItem key={chapter.slug}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={activeSlug === chapter.slug}
-                  >
-                    <Link
-                      href={`/chapter/${chapter.slug}`}
-                      onClick={handleNavigate}
+        {grouped.map((group) => (
+          <SidebarGroup key={group.title ?? "ungrouped"}>
+            {group.title && <SidebarGroupLabel>{group.title}</SidebarGroupLabel>}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((chapter) => (
+                  <SidebarMenuItem key={chapter.slug}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={activeSlug === chapter.slug}
                     >
-                      <span className="text-muted tabular-nums shrink-0 mr-2">
-                        {chapter.chapter}
-                      </span>
-                      <span className="truncate">{chapter.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                      <Link
+                        href={`/chapter/${chapter.slug}`}
+                        onClick={handleNavigate}
+                      >
+                        <span className="text-muted tabular-nums shrink-0 mr-2">
+                          {chapter.chapter}
+                        </span>
+                        <span className="truncate">{chapter.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
     </Sidebar>
   );

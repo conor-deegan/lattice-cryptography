@@ -4,6 +4,7 @@
 
 @custom-variant data-open (&[data-state="open"]);
 @custom-variant data-closed (&[data-state="closed"]);
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
     --font-serif: "Crimson Pro", Georgia, "Times New Roman", serif;
@@ -13,7 +14,6 @@
     --background: 48 33% 97%;
     --foreground: 30 10% 18%;
     --foreground-muted: 30 6% 45%;
-    --foreground-subtle: 30 4% 55%;
     --accent: 220 70% 45%;
     --accent-hover: 220 75% 35%;
     --code-background: 40 20% 94%;
@@ -21,6 +21,19 @@
     --border: 30 15% 88%;
     --selection: 45 60% 88%;
     --radius: 0.5rem;
+}
+
+.dark {
+    /* Dark mode - warm charcoal with soft ivory text */
+    --background: 30 12% 7%;
+    --foreground: 38 20% 85%;
+    --foreground-muted: 30 10% 55%;
+    --accent: 205 65% 65%;
+    --accent-hover: 205 70% 75%;
+    --code-background: 30 12% 11%;
+    --code-foreground: 38 15% 75%;
+    --border: 30 10% 18%;
+    --selection: 30 25% 20%;
 }
 
 @theme inline {
@@ -57,22 +70,6 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* Dark mode - warm charcoal with soft ivory text */
-        --background: 30 12% 7%;
-        --foreground: 38 20% 85%;
-        --foreground-muted: 30 10% 55%;
-        --foreground-subtle: 30 8% 45%;
-        --accent: 205 65% 65%;
-        --accent-hover: 205 70% 75%;
-        --code-background: 30 12% 11%;
-        --code-foreground: 38 15% 75%;
-        --border: 30 10% 18%;
-        --selection: 30 25% 20%;
-    }
 }
 
 @layer base {
@@ -121,30 +118,6 @@
 }
 
 @layer components {
-    .nav-link {
-        color: hsl(var(--foreground-muted));
-        text-decoration: none;
-        transition: color 0.15s ease;
-    }
-
-    .nav-link:hover {
-        color: hsl(var(--foreground));
-        text-decoration: none;
-    }
-
-    .content-link {
-        color: hsl(var(--accent));
-        text-decoration: none;
-        transition: color 0.15s ease;
-    }
-
-    .content-link:hover {
-        color: hsl(var(--accent-hover));
-        text-decoration: underline;
-        text-underline-offset: 3px;
-        text-decoration-thickness: 1px;
-    }
-
     .prose {
         max-width: 65ch;
         font-size: 1rem;
@@ -267,10 +240,6 @@
 @layer utilities {
     .text-muted {
         color: hsl(var(--foreground-muted));
-    }
-
-    .text-subtle {
-        color: hsl(var(--foreground-subtle));
     }
 
     .border-border {

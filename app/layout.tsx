@@ -4,6 +4,8 @@ import { baseUrl } from "./sitemap";
 // import Footer from "./components/footer";
 import { Crimson_Pro, JetBrains_Mono } from "next/font/google";
 import type { Metadata } from "next";
+import { ThemeProvider } from "./components/theme-provider";
+import { ModeToggle } from "./components/mode-toggle";
 // import { Navbar } from './components/nav';
 // import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -56,12 +58,23 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${crimsonPro.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="antialiased">
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="fixed top-3 right-3 z-50">
+            <ModeToggle />
+          </div>
+          {children}
+        </ThemeProvider>
         {/*<Analytics />*/}
         {/*<SpeedInsights />*/}
       </body>
