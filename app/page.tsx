@@ -12,18 +12,19 @@ export default function Page() {
           <p>
             A plain-language course on lattices and lattice cryptography,
             written for applied cryptographers, protocol engineers, and software
-            engineers who want to understand what is happening under the hood.
+            engineers who want to understand how modern post-quantum schemes
+            work under the hood.
           </p>
           <p>
-            The course starts from the background maths and builds up slowly:
-            vectors, matrices, modular arithmetic, lattices, SIS, LWE, rings,
-            modules, ML-KEM, ML-DSA, Falcon, and NTRU-style systems.
+            The course starts with the background maths and builds up slowly:
+            vectors, matrices, modular arithmetic, sampling, noise, lattices,
+            SIS, LWE, rings, modules, ML-KEM, ML-DSA, and Falcon.
           </p>
           <p>
             I hope you find it useful,
             <br />
             <Link
-              className="italic text-blue-700"
+              className="italic text-blue-600"
               href="https://x.com/conordeegan"
               target="_blank"
             >
