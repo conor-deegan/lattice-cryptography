@@ -1,0 +1,55 @@
+---
+title: 'Getting Started'
+publishedAt: '2026-05-14'
+summary: 'A plain-language roadmap for learning lattice cryptography from first principles.'
+chapter: '1'
+status: 'published'
+---
+
+Lattice cryptography is one of the main foundations of post-quantum cryptography.
+
+If you want to understand schemes like ML-KEM, ML-DSA, or Falcon, you need to understand lattices. Not every proof or every parameter choice, but the basic ideas: grids, vectors, matrices, short values, modular arithmetic, and noise. This course covers those ideas from the ground up. Each chapter builds on the last.
+
+First, we cover the maths needed:
+
+```text
+vectors
+matrices
+modular arithmetic
+sampling
+noise
+```
+
+Then we cover lattices:
+
+```
+basis vectors
+integer combinations
+different bases for the same lattice
+short vectors
+distance
+closest points
+```
+
+Then we move to the two core problems:
+
+```
+SIS: find a short solution to a modular equation
+LWE: recover or distinguish noisy modular equations
+```
+
+Then we explain the structure used in real schemes:
+
+```
+polynomials
+rings
+modules
+compression
+rounding
+```
+
+After that, we look at ML-KEM, ML-DSA, and Falcon.
+
+The goal here is not to avoid the maths but to make the maths readable and intuitive. Virtually all of the notaation used will be explained clearly.
+
+By the end, you should understand how lattice schemes work: what the public data is, what the secret data is, where the noise appears, why rounding works, what and how it can fail, and how this connects to post-quantum security.
