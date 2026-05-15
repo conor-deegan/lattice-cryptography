@@ -8,6 +8,7 @@ type Metadata = {
   summary: string;
   image?: string;
   chapter: string;
+  status?: "draft" | "published";
 };
 
 function parseFrontmatter(fileContent: string) {
@@ -22,7 +23,7 @@ function parseFrontmatter(fileContent: string) {
     const [key, ...valueArr] = line.split(": ");
     let value = valueArr.join(": ").trim();
     value = value.replace(/^['"](.*)['"]$/, "$1"); // Remove quotes
-    metadata[key.trim() as keyof Metadata] = value;
+    (metadata as Record<string, string>)[key.trim()] = value;
   });
 
   return { metadata: metadata as Metadata, content };
@@ -51,9 +52,15 @@ function getMDXData(dir: string) {
   });
 }
 
-export const getChapters = cache(() =>
-  getMDXData(path.join(process.cwd(), "app", "chapter", "chapters")),
-);
+export const getChapters = cache(() => {
+  const all = getMDXData(
+    path.join(process.cwd(), "app", "chapter", "chapters"),
+  );
+  if (process.env.NODE_ENV === "production") {
+    return all.filter((c) => c.slug !== "demo");
+  }
+  return all;
+});
 
 export function formatDate(date: string, includeRelative = false) {
   const currentDate = new Date();

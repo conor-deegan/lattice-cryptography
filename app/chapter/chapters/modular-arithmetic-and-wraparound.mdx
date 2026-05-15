@@ -1,0 +1,50 @@
+---
+title: 'Modular arithmetic and wraparound'
+publishedAt: '2026-05-14'
+summary: 'Arithmetic mod q, centered representatives, and why "near 0" or "near q/2" matters.'
+chapter: '4'
+status: 'draft'
+---
+
+Modulo arithmetic means we only keep the remainder after division by some modulus. In lattice cryptography, the modulus is usually written as $q$. Values are often stored, added, multiplied, rounded, compressed, and decoded modulo $q$.
+
+Almost all applied cryptographers and software engineers already understand `%`. However, modulo plaats a special role in lattice cryptography and it's important to know how modulo values behave when they are used as noisy measurements.
+
+# Modular arithmetic and wraparound
+
+Modulo arithmetic means we work inside a fixed range. If the modulus is $q = 7$, then reducing an integer modulo $7$ gives one of these values:
+
+$$
+0, 1, 2, 3, 4, 5, 6
+$$
+
+This is pretty standard in the normal programming sense, any integer modulo $7$ becomes a number from $0 to 6$.
+
+For example:
+
+$$
+8 \bmod 7 = 1 \\
+15 \bmod 7 = 1 \\
+-1 \bmod 7 = 6
+$$
+
+You read $8 \bmod 7 = 1$ as "when $8$ is reduced modulo $7$, the result is $1$".
+
+This is the basic operation; take an integer, divide by the modulos, and keep the remainder.
+
+# Wraparound
+
+The reason modulo arithmetic behaves differently from ordinary integer arithmetic is that the range wraps around. With $q = 7$, the allowed values are:
+
+$$
+0, 1, 2, 3, 4, 5, 6
+$$
+
+After $6$, the next value is not $7$. It wraps back to $0$.
+
+$$
+6 + 1 \equiv 0 \pmod 7 \\
+6 + 2 \equiv 1 \pmod 7
+$$
+
+This is the exactly what happens in lattice cryptography, values do not keep growing forever. They move around a fixed cycle.

@@ -15,6 +15,7 @@ export default function ChapterLayout({
       slug: c.slug,
       chapter: c.metadata.chapter,
       title: c.metadata.title,
+      status: c.metadata.status,
     }))
     .sort((a, b) => parseInt(a.chapter) - parseInt(b.chapter));
 

@@ -1,0 +1,266 @@
+---
+title: 'Dot products, matrices, and many equations at once'
+publishedAt: '2026-05-14'
+summary: 'Dot products and matrix-vector multiplication as a batch of dot products.'
+chapter: '3'
+status: 'published'
+---
+
+## Dot products
+
+Start with two vectors of the same length:
+
+$$
+a = (2, 3)\\
+s = (4, 5)
+$$
+
+The dot product multiplies matching entries and adds the results:
+
+$$
+2 \cdot 4 + 3 \cdot 5 = 8 + 15 = 23
+$$
+
+The notation is:
+
+$$
+\langle a, s \rangle
+$$
+
+A dot product only makes sense when the two vectors have the same length. You can take the dot product of two length-2 vectors, or two length-256 vectors, but not a length-2 vector with a length-3 vector.
+
+### The general rule
+
+For two vectors:
+
+$$
+a = (a_1, a_2, \ldots, a_n)\\
+s = (s_1, s_2, \ldots, s_n)
+$$
+
+their dot product is:
+
+$$
+\langle a, s \rangle = a_1s_1 + a_2s_2 + \cdots + a_ns_n
+$$
+
+i.e we multiply each matching entry, then add all the products.
+
+## Dot products as linear equations
+
+A dot product can be read as one linear equation.
+
+Suppose:
+
+$$
+a = (2, 3)\\
+s = (s_1, s_2)
+$$
+
+Then:
+
+$$
+\langle a, s \rangle = 2s_1 + 3s_2
+$$
+
+So here we can see that the vector $a$ gives the coefficients, and the vector $s$ gives the unknown/secret values. Let's say we are told that $\langle a, s \rangle = \langle a, s \rangle = 2s_1 + 3s_2 = 23$, well now only someone who knows $s$ can solve the equation. In lattice cryptography, this pattern appears constantly. A public vector or matrix is multiplied by a secret vector. The result gives equations involving the secret.
+
+# A matrix is a stack of row vectors
+
+A matrix is a rectangular array of numbers. For example:
+
+$$
+A = 
+\begin{bmatrix}
+2 & 3 \\
+1 & 4 \\
+5 & -1
+\end{bmatrix}
+$$
+
+This matrix has 3 rows and 2 columns. Each row is a vector; $(2, 3), (1, 4), (5, -1)$. So the matrix is a stack of three length-2 row vectors.
+
+# Matrix-vector multiplication
+
+Let: 
+
+$$
+A = 
+\begin{bmatrix}
+2 & 3 \\
+1 & 4 \\
+5 & -1
+\end{bmatrix}
+$$
+
+and:
+
+$$
+s = 
+\begin{bmatrix}
+4\\
+5
+\end{bmatrix}
+$$
+
+The product $As$ is:
+
+$$
+As =
+\begin{bmatrix}
+2 & 3 \\
+1 & 4 \\
+5 & -1
+\end{bmatrix}
+\begin{bmatrix}
+4\\
+5
+\end{bmatrix}
+$$
+
+Each row of $A$ takes a dot product with $s$
+
+First row:
+
+$$
+2 \cdot 4 + 3 \cdot 5 = 23
+$$
+
+Second row:
+
+$$
+1 \cdot 4 + 4 \cdot 5 = 24
+$$
+
+Third row:
+
+$$
+5 \cdot 4 + (-1) \cdot 5 = 15
+$$
+
+So:
+
+$$
+As =
+\begin{bmatrix}
+23\\
+24 \\
+15
+\end{bmatrix}
+$$
+
+The output is a vector with one entry per row of $A$.
+
+This is the main idea: matrix-vector multiplication is a batch of dot products.
+
+# The dimensions much match
+
+The number of columns in the matrix must match the number of entries in the vector.
+
+For example:
+
+$$
+A = 
+\begin{bmatrix}
+2 & 3 \\
+1 & 4 \\
+5 & -1
+\end{bmatrix}
+$$
+
+has 2 columns. So it cab be multiplied by a vector of length 2:
+
+$$
+s = 
+\begin{bmatrix}
+4\\
+5
+\end{bmatrix}
+$$
+
+The result has 3 entries because A has 3 rows. So a 3 x 2 matrix times a length-2 vector gives a length-3 vector. As a general guide, the inner dimensions must match, and the outer dimensions give the output shape.
+
+# Generalising
+
+Let $A$ be a matrix with $m$ rows and $n$ columns. Let $s$ be a vector with $n$ entries. Then $As$ is a vector with $m$ entries:
+
+$$
+As = \begin{pmatrix} \langle A_1, s \rangle \\\\ \langle A_2, s \rangle \\\\ \vdots \\\\ \langle A_m, s \rangle \end{pmatrix}
+$$
+
+Read this as "the first output entry is row 1 of A dotted with s, the second output entry is row 2 of A dotted with s, and so on". Where $A_i$ means the i-th row of $A$, if:
+
+$$
+A_i = (A_{i,1}, A_{i,2}, \ldots, A_{i,n})
+$$
+
+then:
+
+$$
+\langle A_i, s \rangle = A_{i,1}s_1 + A_{i,2}s_2 + \cdots + A_{i,n}s_n
+$$
+
+Which is read as "entry $i,j$ of the matrix multiplies entry $j$ of the vector, then all those products are added". Again, for completeness, the notation $A_{i,j}$ means "the entry of A in row i, column j".
+
+# Why this appears in lattice cryptography
+
+Lattice cryptography uses many linear equations at once. A common notation we will see is:
+
+$$
+As = t
+$$
+
+Which is "matrix $A$ time secret vector $s$ equals vector $t$".
+
+This means:
+
+$$
+\langle A_1, s \rangle = t_1 \\
+\langle A_2, s \rangle = t_2 \\
+... \\
+\langle A_m, s \rangle = t_m
+$$
+
+So $As = t$ is compact notation for many dot product equations.
+
+In real lattice schemes, the entries are usually reduced modulo some number q, and there is often noise added. That gives expressions like:
+
+$$
+As + e = t \pmod q
+$$
+
+Both noise and modulo are coming up so don't worry. For now, the important part is that $As$ means many dot products between rows of $A$ and the vector $s$.
+
+## Row vectors and column vectors
+
+In many texts, vectors are written horizontally:
+
+$$
+s = (4,5)
+$$
+
+But in matrix multiplication, the vector is often written vertically:
+
+$$
+s =
+\begin{pmatrix}
+4 \\
+5
+\end{pmatrix}
+$$
+
+These are not identical written objects. One is a row vector and one is a column vector.
+
+For this chapter, when we write $As$, treat $s$ as a column vector. That is the shape needed for a matrix to multiply it on the left.
+
+The horizontal notation $(4,5)$ is often used because it is easier to read inline. When the shape matters, we will write the vector vertically.
+
+# What to remember
+
+* A dot product multiplies matching entries of two vectors and adds the results.
+* A dot product produces one number.
+* A matrix is a stack of row vectors.
+* Matrix-vector multiplication is a batch of dot products.
+* If $A$ has $m$ rows, then $As$ has $m$ entries.
+* The expression $As = t$ means operating on many linear equations at once.
+* Lattice cryptography uses this idea constantly, usually with modular arithmetic and noise.

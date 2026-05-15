@@ -21,6 +21,7 @@ type ChapterItem = {
   slug: string;
   chapter: string;
   title: string;
+  status?: "draft" | "published";
 };
 
 export function ChapterSidebar({ chapters }: { chapters: ChapterItem[] }) {
@@ -53,24 +54,42 @@ export function ChapterSidebar({ chapters }: { chapters: ChapterItem[] }) {
             {group.title && <SidebarGroupLabel>{group.title}</SidebarGroupLabel>}
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((chapter) => (
-                  <SidebarMenuItem key={chapter.slug}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={activeSlug === chapter.slug}
-                    >
-                      <Link
-                        href={`/chapter/${chapter.slug}`}
-                        onClick={handleNavigate}
-                      >
-                        <span className="text-muted tabular-nums shrink-0 mr-2">
-                          {chapter.chapter}
-                        </span>
-                        <span className="truncate">{chapter.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.items.map((chapter) => {
+                  const isDraft = chapter.status === "draft";
+                  return (
+                    <SidebarMenuItem key={chapter.slug}>
+                      {isDraft ? (
+                        <SidebarMenuButton
+                          aria-disabled="true"
+                          className="opacity-60 cursor-not-allowed pointer-events-none"
+                        >
+                          <span className="text-muted tabular-nums shrink-0 mr-2">
+                            {chapter.chapter}
+                          </span>
+                          <span className="truncate">{chapter.title}</span>
+                          <span className="ml-auto rounded-full border border-[hsl(var(--border))] px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-muted">
+                            Soon
+                          </span>
+                        </SidebarMenuButton>
+                      ) : (
+                        <SidebarMenuButton
+                          asChild
+                          isActive={activeSlug === chapter.slug}
+                        >
+                          <Link
+                            href={`/chapter/${chapter.slug}`}
+                            onClick={handleNavigate}
+                          >
+                            <span className="text-muted tabular-nums shrink-0 mr-2">
+                              {chapter.chapter}
+                            </span>
+                            <span className="truncate">{chapter.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      )}
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
