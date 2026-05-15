@@ -28,9 +28,9 @@ export async function GET() {
   const rssFeed = `<?xml version="1.0" encoding="UTF-8" ?>
   <rss version="2.0">
     <channel>
-        <title>Conor Deegan</title>
+        <title>Lattice Cryptography for Applied Cryptographers</title>
         <link>${baseUrl}</link>
-        <description>Thoughts made into words.</description>
+        <description>Learning Lattice Cryptography</description>
         ${itemsXml}
     </channel>
   </rss>`;

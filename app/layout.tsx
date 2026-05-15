@@ -12,15 +12,15 @@ import { ModeToggle } from "./components/mode-toggle";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Lattice Cryptography for Applied Cryptography",
+    default: "Lattice Cryptography for Applied Cryptographers",
     template: "%s | Lattice Cryptography",
   },
   description: "Learning Lattice Cryptography",
   openGraph: {
-    title: "Lattice Cryptography for Applied Cryptography",
+    title: "Lattice Cryptography for Applied Cryptographers",
     description: "Learning Lattice Cryptography",
     url: baseUrl,
-    siteName: "Lattice Cryptography for Applied Cryptography",
+    siteName: "Lattice Cryptography for Applied Cryptographers",
     locale: "en_US",
     type: "website",
   },

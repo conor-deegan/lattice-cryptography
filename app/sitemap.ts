@@ -1,6 +1,6 @@
 import { getChapters } from "./chapter/utils";
 
-export const baseUrl = "https://conordeegan.dev";
+export const baseUrl = "https://lattice-cryptography.conor.computer";
 
 export default async function sitemap() {
   const chapters = getChapters().map((chapter) => ({
