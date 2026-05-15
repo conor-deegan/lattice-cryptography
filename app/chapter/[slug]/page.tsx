@@ -5,7 +5,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
-  return getChapters().map((chapter) => ({ slug: chapter.slug }));
+  return getChapters()
+    .filter(
+      (chapter) =>
+        process.env.NODE_ENV !== "production" ||
+        chapter.metadata.status !== "draft",
+    )
+    .map((chapter) => ({ slug: chapter.slug }));
 }
 
 export async function generateMetadata(props: {
@@ -56,13 +62,24 @@ export default async function Content(props: {
   const sorted = getChapters().sort(
     (a, b) => parseInt(a.metadata.chapter) - parseInt(b.metadata.chapter),
   );
-  const index = sorted.findIndex((c) => c.slug === params.slug);
-  const chapter = sorted[index];
+  const chapter = sorted.find((c) => c.slug === params.slug);
 
   if (!chapter) notFound();
+  if (
+    process.env.NODE_ENV === "production" &&
+    chapter.metadata.status === "draft"
+  ) {
+    notFound();
+  }
 
-  const prev = index > 0 ? sorted[index - 1] : null;
-  const next = index < sorted.length - 1 ? sorted[index + 1] : null;
+  const currentNum = parseInt(chapter.metadata.chapter);
+  const published = sorted.filter((c) => c.metadata.status !== "draft");
+  const prev =
+    [...published]
+      .reverse()
+      .find((c) => parseInt(c.metadata.chapter) < currentNum) ?? null;
+  const next =
+    published.find((c) => parseInt(c.metadata.chapter) > currentNum) ?? null;
 
   return (
     <article>
