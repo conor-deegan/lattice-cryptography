@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
 import React from "react";
 import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 import { Lattice } from "./lattice";
 
@@ -169,7 +170,7 @@ export function CustomMDX(props: MDXRemoteProps) {
       components={{ ...components, ...(props.components || {}) }}
       options={{
         mdxOptions: {
-          remarkPlugins: [remarkMath],
+          remarkPlugins: [remarkMath, remarkGfm],
           rehypePlugins: [[rehypeKatex, { strict: false }]],
         },
         blockJS: false,

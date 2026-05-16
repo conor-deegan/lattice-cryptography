@@ -3,48 +3,294 @@ title: 'Modular arithmetic and wraparound'
 publishedAt: '2026-05-14'
 summary: 'Arithmetic mod q, centered representatives, and why "near 0" or "near q/2" matters.'
 chapter: '4'
-status: 'draft'
+status: 'published'
 ---
-
-Modulo arithmetic means we only keep the remainder after division by some modulus. In lattice cryptography, the modulus is usually written as $q$. Values are often stored, added, multiplied, rounded, compressed, and decoded modulo $q$.
-
-Almost all applied cryptographers and software engineers already understand `%`. However, modulo plaats a special role in lattice cryptography and it's important to know how modulo values behave when they are used as noisy measurements.
 
 # Modular arithmetic and wraparound
 
-Modulo arithmetic means we work inside a fixed range. If the modulus is $q = 7$, then reducing an integer modulo $7$ gives one of these values:
+Modulo arithmetic means arithmetic inside a fixed range. If the modulus is $q = 7$, then every integer reduced modulo $7$ lands in one of these values:
 
 $$
 0, 1, 2, 3, 4, 5, 6
 $$
 
-This is pretty standard in the normal programming sense, any integer modulo $7$ becomes a number from $0 to 6$.
+This should be familiar if you have done any programming: `a mod q` gives a remainder between `0` and `q - 1`.
 
-For example:
+In lattice cryptography is not the modulo operation itself that really matters, it's how we reason about values after they have wrapped around. In normal programming, it is often enough to know the result is inside the range. In lattice cryptography, we often need to ask another question:
+
+> How far is this modular value from zero?
+
+For example, modulo $7$, the value $6$ is close to $0$, because one more step wraps it back to $0$.
+
+## Reducing values modulo $q$
+
+Reducing a value modulo $q$ means keeping its remainder after division by $q$. For $q = 7$:
 
 $$
-8 \bmod 7 = 1 \\
-15 \bmod 7 = 1 \\
+8 \bmod 7 = 1
+$$
+
+You can read this as: "when $8$ is reduced modulo $7$, the result is $1$". That is because:
+
+$$
+8 = 1 \cdot 7 + 1
+$$
+
+The remainder is $1$. A few more examples:
+
+$$
+15 \bmod 7 = 1
+$$
+
+because:
+
+$$
+15 = 2 \cdot 7 + 1
+$$
+
+And:
+
+$$
 -1 \bmod 7 = 6
 $$
 
-You read $8 \bmod 7 = 1$ as "when $8$ is reduced modulo $7$, the result is $1$".
+because $-1$ is one step below $0$, and modulo $7$ that lands on $6$. So modulo arithmetic keeps values inside a fixed range. Values do not keep growing forever, they wrap back into the range $0$ to $q - 1$.
 
-This is the basic operation; take an integer, divide by the modulos, and keep the remainder.
+## Same value, different integers
 
-# Wraparound
+Because values wrap around, different integers can land in the same modulo value. For $q = 7$:
 
-The reason modulo arithmetic behaves differently from ordinary integer arithmetic is that the range wraps around. With $q = 7$, the allowed values are:
+$$
+1 \bmod 7 = 1\\
+8 \bmod 7 = 1\\
+15 \bmod 7 = 1\\
+-6 \bmod 7 = 1
+$$
+
+These are different integers, but they all land in the same place modulo $7$. We can write this as:
+
+$$
+1 \equiv 8 \equiv 15 \equiv -6 \pmod 7
+$$
+
+This is read as: "$1$, $8$, $15$, and $-6$ are congruent modulo $7$". This does not mean the integers are equal, it means they become the same value after reducing modulo $7$.
+
+A **representative** is the integer we choose to write down for a modular value. For example, all of these integers represent the same value modulo $7$:
+
+$$
+..., -13, -6, 1, 8, 15, 22, ...
+$$
+
+The usual representative is the one in the range:
+
+$$
+0, 1, ..., q - 1
+$$
+
+This is called the **standard representative**. For the modular value above, the standard representative is $1$.
+
+## Signed distance from zero
+
+The standard representative is the usual output of modulo reduction. For $q = 7$, the standard representatives are:
 
 $$
 0, 1, 2, 3, 4, 5, 6
 $$
 
-After $6$, the next value is not $7$. It wraps back to $0$.
+But when we ask whether a modular value is small, we usually do not mean:
+
+> Is the standard representative numerically small?
+
+We mean:
+
+> How far is this value from $0$ after accounting for wraparound?
+
+For example, the standard representative $6$ is one step below $0$ modulo $7$:
 
 $$
-6 + 1 \equiv 0 \pmod 7 \\
-6 + 2 \equiv 1 \pmod 7
+6 \equiv -1 \pmod 7
 $$
 
-This is the exactly what happens in lattice cryptography, values do not keep growing forever. They move around a fixed cycle.
+The standard representative $5$ is two steps below $0$:
+
+$$
+5 \equiv -2 \pmod 7
+$$
+
+The standard representative $4$ is three steps below $0$:
+
+$$
+4 \equiv -3 \pmod 7
+$$
+
+Writing modular values this way is called using **centered representatives**. For $q = 7$, the standard representatives are:
+
+$$
+0, 1, 2, 3, 4, 5, 6
+$$
+
+The centered representatives are:
+
+$$
+0, 1, 2, 3, -3, -2, -1
+$$
+
+Or, written in order around zero:
+
+$$
+-3, -2, -1, 0, 1, 2, 3
+$$
+
+These are the same modular values. The centered version just writes them by signed distance from $0$.
+
+## Small values modulo $q$
+
+A modular value is small if its centered representative has small absolute value.
+
+For $q = 7$:
+
+| Standard representative | Centered representative | Distance from $0$ |
+|---:|---:|---:|
+| $0$ | $0$ | $0$ |
+| $1$ | $1$ | $1$ |
+| $6$ | $-1$ | $1$ |
+| $2$ | $2$ | $2$ |
+| $5$ | $-2$ | $2$ |
+| $3$ | $3$ | $3$ |
+| $4$ | $-3$ | $3$ |
+
+It should now be obvious that the values closest to $0$ modulo $7$ are:
+
+$$
+0, 1, 6
+$$
+
+The values $1$ and $6$ are both distance $1$ from $0$. The difference is the sign:
+
+$$
+1 \equiv 1 \pmod 7\\
+6 \equiv -1 \pmod 7
+$$
+
+The values $3$ and $4$ are the farthest from $0$ modulo $7$:
+
+$$
+3 \equiv 3 \pmod 7\\
+4 \equiv -3 \pmod 7
+$$
+
+So the centered representative gives two pieces of information:
+- the sign, meaning which side of $0$ the value sits on,
+- the size, meaning its distance from $0$.
+
+This is the meaning of "small modulo $q$" used throughout lattice cryptography. It does not mean "small as a standard representative", it means "small after converting to the centered representative".
+
+## What about when $q$ is even?
+
+When $q$ is odd, the centered range is symmetric. For $q = 7$, we used:
+
+$$
+-3, -2, -1, 0, 1, 2, 3
+$$
+
+When $q$ is even, one value sits exactly opposite $0$. For $q = 8$, the standard representatives are:
+
+$$
+0, 1, 2, 3, 4, 5, 6, 7
+$$
+
+A common centered range is:
+
+$$
+-4, -3, -2, -1, 0, 1, 2, 3
+$$
+
+Here:
+
+$$
+4 \equiv -4 \pmod 8
+$$
+
+The value $4$ is exactly halfway around the modulo range. It is equally far from $0$ in both directions. Some conventions choose $4$. Some choose $-4$. The convention we choose is important when writing precise code or proofs. For now, the main point to remember is that values around $q/2$ are the farthest from $0$.
+
+So, in summary:
+- values near $0$ are close to $0$,
+- after reduction to the standard range, values near $q$ represent small negative values,
+- values near $q/2$ are far from $0$.
+
+## Why this matters later
+
+Lattice schemes do a lot of arithmetic modulo $q$, and many correctness arguments depend on some value being "small". That value might be:
+
+- an error term,
+- a noise term,
+- a rounding difference,
+- a compression difference.
+
+For example, a toy decoding rule might be:
+
+- values near $0$ decode as $0$,
+- values near $q/2$ decode as $1$.
+
+If a value meant to be $0$ becomes $1$ due to some noise in the system, it is still close to $0$ so will decode correctly. If we are working modulo $17$ and it becomes $16$, it is also still close to $0$ and will decode correctly, because:
+
+$$
+16 \equiv -1 \pmod {17}
+$$
+
+But if it moves near $8$ or $9$, it is no longer close to $0$. It is near $q/2$ and a decoder may now interpret it as the wrong value. That is an example of a decryption failure: the arithmetic modulo $q$ is still correct, but the value has crossed a decoding boundary.
+
+## Vectors modulo $q$
+
+As we discussed, lattice schemes usually work with vectors and matrices, not single numbers. When we have a vector modulo $q$, we just mean that it has entries that are each interpreted modulo $q$. For example:
+
+$$
+x = (16, 2, 9) \pmod {17}
+$$
+
+Read this as: "$x$ is a vector whose entries are considered modulo $17$". Each entry is called a coefficient. The coefficients are:
+
+$$
+16, 2, 9
+$$
+
+To reason about size, we center each coefficient. Modulo $17$:
+
+$$
+16 \equiv -1 \pmod {17}\\
+2 \equiv 2 \pmod {17}\\
+9 \equiv -8 \pmod {17}
+$$
+
+So the centered version is:
+
+$$
+(-1, 2, -8)
+$$
+
+Now we can use the same norm ideas from the previous chapter. If we care about the largest coefficient, we use the infinity norm. First take the absolute value of each centered coefficient:
+
+$$
+|-1| = 1,\quad |2| = 2,\quad |-8| = 8
+$$
+
+The largest of these is $8$, so:
+
+$$
+\|x\|_\infty = 8
+$$
+
+This tells us that $x$ has one coefficient that is far from $0$ modulo $17$ and that coefficient is $9$ in standard form. So although $16$ may look large in the standard range, it is actually small after centering. The coefficient $9$ is the problem if we are trying to keep every coefficient of the vector close to $0$ (which will be very important later).
+
+## What to remember
+
+- Modulo arithmetic keeps values inside a fixed range: $0$ to $q - 1$.
+- Different integers can land in the same modular value.
+- The standard representative is the usual value in the range $0, 1, ..., q - 1$.
+- When reasoning about size, we usually care about signed distance from $0$.
+- Centered representatives are the formal way to write that signed-distance view.
+- For $q = 7$, the standard representative $6$ has centered representative $-1$.
+- A modular value is small if its centered representative has small absolute value.
+- After reduction to the standard range, values near $q$ represent small negative values.
+- Values near $q/2$ are far from $0$.
+- Lattice schemes use this when reasoning about errors, noise, rounding differences, compression differences, decoding, and failures.
