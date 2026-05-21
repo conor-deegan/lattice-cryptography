@@ -3,21 +3,182 @@ title: 'Determinants and volume'
 publishedAt: '2026-05-20'
 summary: 'A single number from a matrix that tells you how much space its columns enclose - the key quantity for measuring lattices.'
 chapter: '5'
-status: 'draft'
+status: 'published'
 ---
 
-Take two vectors in the plane. They mark out a parallelogram. Take three vectors in 3D and they mark out a slanted box. The *determinant* of the matrix whose columns are those vectors is a single number that tells you the volume of that shape.
+Two vectors in the plane mark out a parallelogram. Three vectors in 3D mark out a slanted box. The **determinant** of the matrix whose columns are those vectors is a single number that gives the area or volume of that shape.
 
-That single number turns out to be one of the most important quantities in lattice cryptography. The volume of a lattice's fundamental region, how dense the lattice is, how short its shortest vector can possibly be, how hard it is to find that shortest vector - all of these are tied back to a determinant.
+This chapter is about computing that number, what its sign means, and what happens when it is zero. Later chapters will use the determinant as the standard way to measure a lattice.
 
-By the end of this chapter, you should understand what a determinant measures geometrically, why |det B| is the volume of the parallelepiped spanned by the columns of B, why the determinant is the same no matter which basis you choose for the same lattice, and why "volume" is the unit we'll use throughout the rest of this course.
+By the end of this chapter, you should know how to compute the determinant of a 2x2 matrix by hand, what $|\det B|$ measures geometrically, and why a zero determinant means the columns of $B$ are linearly dependent.
 
-## TODO
+## A parallelogram from two vectors
 
-- Two vectors in 2D: the parallelogram and its signed area.
-- Three vectors in 3D: the parallelepiped.
-- Definition: |det B| = volume of the parallelepiped spanned by the columns of B.
-- Sign of the determinant: orientation, why we'll usually take absolute value.
-- Linear dependence ↔ determinant is zero ↔ collapsed volume.
-- Preview: different bases of the same lattice have the same |det|. This is the invariant we'll lean on later.
-- Worked example: compute |det B| for a tiny 2×2 basis by hand.
+Take two vectors:
+
+$$
+b_1 = (2, 1)\\
+b_2 = (1, 3)
+$$
+
+These two vectors, together with the origin, mark out a parallelogram. The four corners are:
+
+$$
+(0, 0),\quad b_1 = (2, 1),\quad b_2 = (1, 3),\quad b_1 + b_2 = (3, 4)
+$$
+
+<Lattice
+  basis={[[2, 1], [1, 3]]}
+  showFundamentalDomain
+  caption="b_1 and b_2 are two sides of a parallelogram. The other two sides are parallel copies, meeting at b_1 + b_2 = (3, 4)."
+/>
+
+How large is that parallelogram? Well, the determinant is how we compute it.
+
+## The 2x2 determinant
+
+Put $b_1$ and $b_2$ as the columns of a matrix:
+
+$$
+B =
+\begin{bmatrix}
+2 & 1 \\
+1 & 3
+\end{bmatrix}
+$$
+
+For any 2x2 matrix:
+
+$$
+B =
+\begin{bmatrix}
+a & b \\
+c & d
+\end{bmatrix}
+$$
+
+the determinant is defined as:
+
+$$
+\det B = ad - bc
+$$
+
+For our example:
+
+$$
+\det B = 2 \cdot 3 - 1 \cdot 1 = 5
+$$
+
+The number $5$ is the signed area of the parallelogram with sides $b_1$ and $b_2$. We will see what "signed" means in a moment. For now, the unsigned area is $|\det B| = 5$.
+
+## Why this formula gives the area
+
+You do not need to derive the formula to use it, but it is worth seeing why it works in one case. If the two vectors are $b_1 = (a, 0)$ along the horizontal axis and $b_2 = (0, d)$ along the vertical axis, the parallelogram is a rectangle with sides $a$ and $d$. Its area is $ad$. The formula gives:
+
+$$
+\det
+\begin{bmatrix}
+a & 0 \\
+0 & d
+\end{bmatrix}
+= ad - 0 \cdot 0 = ad
+$$
+
+When the vectors tilt away from the axes, the $bc$ term corrects for the shear. The result is still the area of the parallelogram they span.
+
+## Sign and orientation
+
+The determinant can be negative. For:
+
+$$
+B =
+\begin{bmatrix}
+1 & 3 \\
+3 & 1
+\end{bmatrix}
+$$
+
+the determinant is $1 \cdot 1 - 3 \cdot 3 = -8$. The parallelogram still has area $8$. The negative sign records the order of the two vectors: $b_1, b_2$ in one rotational order gives a positive determinant, and the opposite order gives a negative determinant.
+
+This sign is called the **orientation**. For measuring how much space the columns enclose, the orientation does not matter, and we take the absolute value $|\det B|$. The sign matters only when the order of the columns carries meaning.
+
+## Three vectors and a parallelepiped
+
+The same idea works in 3D. Three vectors in 3D mark out a slanted box called a **parallelepiped**. The determinant of the 3x3 matrix whose columns are those vectors gives the signed volume of that box. The formula is longer, but the meaning is the same:
+
+$$
+|\det B| = \text{volume of the parallelepiped spanned by the columns of } B
+$$
+
+The same pattern continues in higher dimensions: for an $n \times n$ matrix $B$, the determinant gives the signed $n$-dimensional volume of the shape spanned by its columns. We will rarely compute determinants by hand beyond 2x2, but the geometric meaning is the exact same.
+
+## When the determinant is zero
+
+In chapter 4 we said that columns of a matrix are linearly dependent when one column can be written as a linear combination of the others. Geometrically, that means the parallelogram (or parallelepiped) flattens onto a line or plane, and its volume is zero.
+
+The determinant detects this exactly:
+
+$$
+\det B = 0 \iff \text{the columns of } B \text{ are linearly dependent}
+$$
+
+Read the symbol $\iff$ as "if and only if": each side implies the other.
+
+For example:
+
+$$
+B =
+\begin{bmatrix}
+1 & 2 \\
+2 & 4
+\end{bmatrix}
+$$
+
+The columns are $(1, 2)$ and $(2, 4)$. The second is twice the first, so they are linearly dependent. The determinant confirms it:
+
+$$
+\det B = 1 \cdot 4 - 2 \cdot 2 = 0
+$$
+
+Linear independence and non-zero determinant are the same condition. So, whenever we need to check that a set of vectors really describes a full $n$-dimensional shape, computing the determinant is the test.
+
+## Different parallelograms, same area
+
+Replace $b_2$ with $b_2 + b_1$ to get a new pair:
+
+$$
+b_1 = (2, 1),\quad b_2' = b_2 + b_1 = (3, 4)
+$$
+
+The new matrix is:
+
+$$
+B' =
+\begin{bmatrix}
+2 & 3 \\
+1 & 4
+\end{bmatrix}
+$$
+
+with $\det B' = 2 \cdot 4 - 3 \cdot 1 = 5$. Same absolute value as before.
+
+At first this can feel wrong. The new vector $b_2'$ is longer than $b_2$ ($\|b_2'\| = 5$ versus $\|b_2\| = \sqrt{10} \approx 3.16$), so the new parallelogram should be bigger but it's not. The reason is that the area of a parallelogram is base times perpendicular height, *not* the product of the two side lengths.
+
+Take $b_1$ as the base. The endpoint of $b_2$ is $(1, 3)$ and the endpoint of $b_2'$ is $(3, 4)$. Both of these points sit on the same line parallel to $b_1$. Adding $b_1$ to $b_2$ shifted the endpoint along that line, but did not change its perpendicular distance from the base. Same base, same height, same area.
+
+<Lattice
+  basis={[[2, 1], [3, 4]]}
+  showFundamentalDomain
+  caption="The new parallelogram with sides b_1 and b_2'. b_1 is unchanged, and the opposite side still lies on the same line parallel to b_1 as before, so the perpendicular height (and therefore the area) is unchanged."
+/>
+
+The two pairs of vectors mark out different parallelograms, but the area is the same. More generally, adding a multiple of one column of a matrix to another column never changes $|\det B|$, so many different matrices share the same $|\det B|$ value.
+
+## What to remember
+
+- The determinant of a square matrix $B$ is a single number.
+- For a 2x2 matrix $\begin{bmatrix} a & b \\ c & d \end{bmatrix}$, the determinant is $ad - bc$.
+- $|\det B|$ is the volume of the parallelepiped spanned by the columns of $B$ (area in 2D, volume in 3D, $n$-volume in $n$D).
+- The sign of $\det B$ records the orientation of the columns. For measuring size, we take the absolute value.
+- $\det B = 0$ if and only if the columns of $B$ are linearly dependent.
+- Adding a multiple of one column of $B$ to another column does not change $|\det B|$.
