@@ -1,12 +1,12 @@
 ---
-title: 'Vectors, length, and "short" things'
+title: 'Vectors, length, and bounds'
 publishedAt: '2026-05-14'
 summary: 'Vectors, norms, and what cryptographers mean by short.'
 chapter: '2'
 status: 'published'
 ---
 
-> Before we dive in, the next few chapters will assume you have a very basic level of mathematics - the goal is to start slow and layer on more complexity as we go. If you find this stuff obvious. Feel free to skip to Part 2.
+> Before we dive in, the next few chapters will assume you have a very basic level of mathematics. The goal is to start slow and layer on more complexity as we go. If you find this stuff obvious, feel free to skip to Part 2.
 
 A vector is a list of numbers. In lattice cryptography, vectors are everywhere. A secret key might be a vector. An error term might be a vector. A lattice point is a vector. A signature may contain vectors that need to be 'short'.
 
@@ -96,7 +96,7 @@ which you can read as "the norm of x is 5" or more simply "the length of x is 5"
 
 ## Euclidean norm
 
-The most common vector length is called the Euclidean norm. It's the the normal straight-line distance you already know from geometry.
+The most common vector length is called the Euclidean norm. It is the normal straight-line distance you already know from geometry.
 
 For a two-entry vector $x = (x1, x2)$ the Euclidean norm is $||x|| = \sqrt{x1² + x2²}$
 
@@ -127,15 +127,13 @@ $$
 ||x||² = x1² + x2² + ... + xn²
 $$
 
-You can read this as "the squared length of x is the sum of the squared entries". This avoids taking a square root at the end and for many checks, comparing the squared lengths is enough. For example, suppose you want to check whether $||x|| <= 10$, You can instead check $||x||² <= 100$. This is often easier in code.
+You can read this as "the squared length of x is the sum of the squared entries". This avoids taking a square root at the end and for many checks, comparing the squared lengths is enough. For example, suppose you want to check whether $\|x\| \leq 10$. You can instead check $\|x\|^2 \leq 100$. This is often easier in code.
 
 ## Coefficient size and the infinity norm
 
 The Euclidean norm measures the size of the whole vector but sometimes we need a different question:
 
 "What is the largest individual entry?"
-
-This can be important because lattice cryptography often puts bounds on individual coefficients. A scheme might require every coefficient of a secret, error term, or signature component to stay within a small range.
 
 For example:
 
@@ -285,74 +283,35 @@ $$
 c = (1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 $$
 
-Every coefficient is small. The infinity norm is $\|c\|_\infty = 1$ but the Euclidean norm is $\|c\| = \sqrt{10} \approx3.16$. So although the largest coefficient is only `1`, the whole vector has length about `3.16`. This gap gets larger in higher dimensions, small coefficients do not automatically mean tiny Euclidean length.
+Every coefficient is small. The infinity norm is $\|c\|_\infty = 1$ but the Euclidean norm is $\|c\| = \sqrt{10} \approx 3.16$. So although the largest coefficient is only `1`, the whole vector has length about `3.16`. This gap gets larger in higher dimensions, small coefficients do not automatically mean tiny Euclidean length.
 
-In lattice cryptography, both measurements are useful. A coefficient bound controls each entry:
+## Bounds
 
-$$
-\|x\|_\infty \leq B
-$$
-
-This can be read this as "every coefficient of `x` has absolute value at most `B`". A Euclidean norm bound controls the total vector length:
+A norm gives a number; a bound is a condition that uses that number. A Euclidean norm bound looks like:
 
 $$
 \|x\| \leq B
 $$
 
-Which says that "the whole vector `x` has length at most `B`".
+Read this as "the length of $x$ is at most $B$". For example, $\|x\| \leq 10$ accepts $x = (6, 8)$ and rejects $x = (8, 9)$.
 
-## What "short" means
-
-Cryptographers often say a vector is "short" we now know could mean different things. Usually one of $\|x\| \text{ is small}$ or $\|x\|_\infty \text{ is small}$. Sometimes it means both.
-
-## Why "short" appears in lattice cryptography
-
-Lattice cryptography often works with small secret values hidden inside larger public structures - this won't make complete sense right now but don't worry about that. For example, a secret vector might be sampled with small coefficients:
+A coefficient bound looks similar:
 
 $$
-s = (-1, 0, 1, 1, -1, 0)
+\|x\|_\infty \leq B
 $$
 
-`s` may be considered short here compared to some larger public structure because it's coefficients are small and it's Euclidean length is small. The security of lattices often relies on the fact that recovering the short secret from the public value is hard. You do not need to understand this yet. For now, the point is that lattice cryptography often hides short vectors inside larger algebraic objects.
+This says "every entry of $x$ has absolute value at most $B$".
 
-## Bounds
-
-We have already described bounds above but for completeness, bounds are how "short" becomes precise. Without a bound, "short" is just a description, whereas with a bound, it becomes a condition that can be checked.
-
-For example, let's set a constraint such that the Euclidean length of `x` must be at most `10`:
-
-$$
-\|x\| \leq 10
-$$
-
-This accepts $x = (6, 8)$ and rejects $x = (8, 9)$
-
-A coefficient bound works similarly.
-
-## Why this shows up in implementations
-
-Even when a lattice scheme is described mathematically, implementations check these sizes directly. For example, signing code may reject a sampled vector if it is too large:
-
-```python
-if norm_squared(x) > B_squared:
-    reject
-```
-
-or 
-
-```python
-if max_abs_coefficient(x) > gamma:
-    reject
-```
+Cryptographers often call a vector "short" when it satisfies a bound like one of these. On its own, "short" is informal; a stated bound is what makes it precise.
 
 ## What to remember
 
 * A vector is an ordered list of numbers.
 * The dimension of a vector is the number of entries it has.
-* $|x|$ usually means the Euclidean norm/length.
-* To compute $|x|$, square each entry, add the results, then take the square root.
-* $|x|^2$ is the squared length, often easier to use in code.
-* $|x|_\infty$ means the largest absolute coefficient of the vector.
-* "Short" means small under a specific size measurement.
-* In lattice cryptography, "short" usually means small Euclidean norm, small infinity norm, or both.
+* $\|x\|$ usually means the Euclidean norm/length.
+* To compute $\|x\|$, square each entry, add the results, then take the square root.
+* $\|x\|^2$ is the squared length, often easier to use in code.
+* $\|x\|_\infty$ means the largest absolute coefficient of the vector.
+* A bound is a condition like $\|x\| \leq B$ or $\|x\|_\infty \leq B$; a vector that satisfies one is often called "short".
 * A high-dimensional vector can have small coefficients but still have a meaningful Euclidean length.

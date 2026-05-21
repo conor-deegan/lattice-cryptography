@@ -131,7 +131,7 @@ export default async function Content(props: {
           </Link>
         ) : (
           <p className="text-muted text-sm italic">
-            You&rsquo;re at the origin — keep going!
+            You&rsquo;re at the origin - keep going!
           </p>
         )}
         {next ? (
@@ -148,7 +148,7 @@ export default async function Content(props: {
           </Link>
         ) : (
           <p className="text-muted text-sm italic sm:text-right">
-            From Learning With Errors to learning without them — well done!
+            From Learning With Errors to learning without them - well done!
           </p>
         )}
       </nav>

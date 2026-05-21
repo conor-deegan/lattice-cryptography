@@ -1,0 +1,168 @@
+---
+title: 'Linear independence, span, and dimension'
+publishedAt: '2026-05-20'
+summary: 'When a set of vectors really does describe a higher-dimensional space, and when it just looks like it does.'
+chapter: '4'
+status: 'published'
+---
+
+A lattice is built from a handful of vectors. For that handful to actually describe a higher-dimensional grid, the vectors have to point in genuinely different directions. If two of them lie on the same line, they describe the same 1D set twice, no matter how many you stack up.
+
+This chapter is about telling the difference between when a set of vectors covers new ground, and when one of them is redundant.
+
+By the end of this chapter, you should understand what a linear combination is, what it means for vectors to be linearly independent, what *span* and *dimension* mean, and why "$n$ linearly independent vectors" is an important assumption behind every lattice we will meet.
+
+## Linear combinations: scale and add
+
+There are only two things you can do to a vector to get another vector: scale it, and add it to another. Doing both at once is called a linear combination.
+
+Take two vectors:
+
+$$
+v_1 = (1, 0)\\
+v_2 = (0, 1)
+$$
+
+Scaling $v_1$ by $3$ means multiplying every entry by $3$:
+
+$$
+3 \cdot v_1 = (3, 0)
+$$
+
+Adding $3 \cdot v_1$ and $4 \cdot v_2$ means adding entry by entry:
+
+$$
+3 \cdot v_1 + 4 \cdot v_2 = (3, 0) + (0, 4) = (3, 4)
+$$
+
+The result $(3, 4)$ is a linear combination of $v_1$ and $v_2$. The numbers $3$ and $4$ are called the coefficients.
+
+In general, a linear combination of $v_1, v_2, \ldots, v_k$ is any vector of the form:
+
+$$
+c_1 v_1 + c_2 v_2 + \cdots + c_k v_k
+$$
+
+where $c_1, c_2, \ldots, c_k$ are numbers. Read this as "scale each $v_i$ by $c_i$, then add the results".
+
+This is the same kind of expression as matrix-vector multiplication from chapter 3. If we put $v_1, v_2, \ldots, v_k$ as columns of a matrix $V$ and stack the coefficients into a vector $c$, then $Vc$ is exactly the linear combination above.
+
+## When one vector is redundant
+
+Suppose I give you two vectors:
+
+$$
+v_1 = (1, 2)\\
+v_2 = (2, 4)
+$$
+
+These point in the same direction. You can see this directly: $v_2 = 2 \cdot v_1$. Anywhere $v_2$ can take you, $v_1$ could have taken you already, just with a different coefficient.
+
+<Lattice
+  basis={[[1, 0], [0, 1]]}
+  vectors={[{ v: [2, 4], label: "v_2", color: "#16a34a" }, { v: [1, 2], label: "v_1", color: "#dc2626" }]}
+  caption="v_1 and v_2 lie on the same line through the origin. v_2 is just v_1 scaled by 3."
+/>
+
+We say $v_2$ is **linearly dependent** on $v_1$, because $v_2$ can be written as a linear combination of $v_1$:
+
+$$
+v_2 = 2 \cdot v_1
+$$
+
+Now consider:
+
+$$
+w_1 = (2, 1)\\
+w_2 = (1, 3)
+$$
+
+There is no number $c$ where $w_2 = c \cdot w_1$.
+
+<Lattice
+  basis={[[1, 0], [0, 1]]}
+  vectors={[{ v: [2, 1], label: "w_1" }, { v: [1, 3], label: "w_2" }]}
+  caption="w_1 and w_2 point in different directions. Neither is a scaled copy of the other."
+/>
+
+We say $w_1$ and $w_2$ are **linearly independent**.
+
+## The general definition
+
+For two vectors, "one is a scaled copy of the other" is easy to check. For three or more, the test needs to be a bit more careful, because a vector can be redundant by being a combination of several others, not just a scalar multiple of one.
+
+The standard definition handles all cases at once. A set of vectors $v_1, v_2, \ldots, v_k$ is **linearly independent** if the only way to write:
+
+$$
+c_1 v_1 + c_2 v_2 + \cdots + c_k v_k = 0
+$$
+
+is by taking every $c_i = 0$. Here $0$ on the right is the zero vector, with every entry equal to $0$.
+
+Read this as "the only linear combination that gives the zero vector is the boring one where every coefficient is zero". If you can find any other choice of coefficients that gives zero, then at least one vector is redundant and the set is **linearly dependent**.
+
+Let's check the dependent pair from above. Take $v_1 = (1, 2)$ and $v_2 = (3, 6)$. Pick $c_1 = 3$ and $c_2 = -1$:
+
+$$
+3 \cdot (1, 2) + (-1) \cdot (3, 6) = (3, 6) + (-3, -6) = (0, 0)
+$$
+
+We found a non-zero choice of coefficients that gives the zero vector, so the set $\{v_1, v_2\}$ is linearly dependent.
+
+For the independent pair $w_1 = (2, 1), w_2 = (1, 3)$, the only way to make $c_1 w_1 + c_2 w_2 = (0, 0)$ is $c_1 = c_2 = 0$. There is no shortcut.
+
+## Span: every place you can reach
+
+The **span** of a set of vectors is the set of every vector you can write as a linear combination of them.
+
+For:
+
+$$
+v_1 = (1, 2)\\
+v_2 = (3, 6)
+$$
+
+every linear combination $c_1 v_1 + c_2 v_2$ is some multiple of $v_1$, because $v_2$ is already a multiple of $v_1$. So the span is the line through the origin in the direction of $v_1$. Two vectors, but only a 1D set of reachable points.
+
+For:
+
+$$
+w_1 = (2, 1)\\
+w_2 = (1, 3)
+$$
+
+you can reach any point in the 2D plane by choosing the right $c_1$ and $c_2$. The span is the whole plane.
+
+The span is what the vectors actually describe. Linear dependence shrinks the span. Linear independence keeps it as large as possible.
+
+## Dimension: how many directions you actually have
+
+The **dimension** of the span is the number of linearly independent vectors needed to describe it.
+
+- The span of $\{v_1, v_2\} = \{(1, 2), (3, 6)\}$ is 1-dimensional. You only need one of the vectors to describe the whole line.
+- The span of $\{w_1, w_2\} = \{(2, 1), (1, 3)\}$ is 2-dimensional. You need both vectors to describe the whole plane.
+
+So the count of vectors in a set and the dimension of its span are not the same thing. The dimension is the count after removing redundant vectors.
+
+A useful rule of thumb: in $n$-dimensional space, you can have at most $n$ linearly independent vectors. Any larger set must contain a redundant vector. For example, in 2D, three vectors are always linearly dependent, because the third one is reachable as a combination of the other two.
+
+## Why this matters for lattices
+
+A lattice in $n$ dimensions is built from a set of $n$ vectors called a **basis**. We have not defined lattices yet, but the requirement on the basis is the one this chapter has been building toward:
+
+> A basis must consist of $n$ linearly independent vectors.
+
+If the basis vectors are linearly dependent, the span is smaller than $n$ dimensions, and the "lattice" collapses onto a lower-dimensional subset. A 2D basis with two collinear vectors describes a 1D lattice on a line, not a 2D grid.
+
+This is also the reason the next chapter cares about the determinant. The determinant of a matrix is zero exactly when its columns are linearly dependent, and non-zero exactly when they are linearly independent. So checking "do these vectors describe a real $n$-dimensional lattice?" is the same as checking "is the determinant non-zero?".
+
+## What to remember
+
+- A linear combination of vectors is a sum of scaled copies: $c_1 v_1 + c_2 v_2 + \cdots + c_k v_k$.
+- Vectors are **linearly dependent** if one can be written as a linear combination of the others.
+- Equivalently, they are dependent if some non-zero choice of coefficients gives $c_1 v_1 + \cdots + c_k v_k = 0$.
+- Vectors are **linearly independent** if the only way to make that sum zero is to take every coefficient to be zero.
+- The **span** is the set of every vector reachable as a linear combination.
+- The **dimension** of a span is the number of linearly independent vectors needed to describe it.
+- In $n$-dimensional space, you can have at most $n$ linearly independent vectors.
+- A lattice basis must be linearly independent. Otherwise the lattice collapses to a lower dimension.

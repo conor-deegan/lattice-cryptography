@@ -1,0 +1,26 @@
+---
+title: 'Fast multiplication and the NTT'
+publishedAt: '2026-05-20'
+summary: 'Why ML-KEM and ML-DSA do all their polynomial arithmetic in a transformed domain - and what that domain actually is.'
+chapter: '37'
+status: 'draft'
+---
+
+Multiplying two degree-n polynomials looks like an n² job: every coefficient of one has to meet every coefficient of the other. For the polynomials inside ML-KEM and ML-DSA, n is 256 - and you do this multiplication a lot.
+
+There's a trick that turns it into an n·log(n) job instead. It's called the Number Theoretic Transform, or NTT. It's the same idea as the Fast Fourier Transform, but it lives entirely inside arithmetic modulo q so there are no floating-point numbers and no rounding errors.
+
+The schemes lean on this so heavily that ML-KEM and ML-DSA specify their public keys and ciphertexts directly in NTT form. You can't really read the spec without knowing what the NTT is doing.
+
+By the end of this chapter, you should understand why naive polynomial multiplication is slow, what "pointwise multiplication in a transformed domain" means, what the NTT is and why it works in Z_q, what a "primitive root of unity mod q" is and why ML-KEM picks q = 3329 to get one, and how the schemes use forward NTT → pointwise multiply → inverse NTT to do fast products.
+
+## TODO
+
+- The cost of schoolbook polynomial multiplication.
+- Big idea: evaluate at well-chosen points, multiply pointwise, interpolate back.
+- Roots of unity mod q - why we need them and what they are.
+- The NTT as the discrete Fourier transform's modular cousin.
+- Why ML-KEM picks q = 3329 and ML-DSA picks q = 8380417 (NTT-friendly primes).
+- Forward NTT, pointwise multiply, inverse NTT - the three-step dance.
+- Where this shows up in the specs: keys and ciphertexts already in NTT form.
+- A small worked example.

@@ -2,8 +2,275 @@
 title: 'Sampling, randomness, and noise'
 publishedAt: '2026-05-14'
 summary: 'Uniform sampling, small secrets, small errors, and the idea of sampling from a distribution.'
-chapter: '5'
-status: 'draft'
+chapter: '7'
+status: 'published'
 ---
 
-Explain uniform sampling, small secrets, small errors, binomial distributions, and the idea of sampling from a distribution. Do not introduce full Gaussian machinery yet. Just make the reader comfortable with "choose a small random vector".
+Lattice cryptography uses a lot of randomness. Keys are sampled, secrets are sampled, errors are sampled, challenges are sampled. Many security statements assume that some values are chosen randomly from a specified set or distribution.
+
+This chapter will explore how we choose random values in a controlled way, so that they are useful for lattice cryptography. This is a little harder than it sounds, for example, a large part of lattice cryptography requires that we "choose a small random vector" but that hides several important details. What does "choose" mean? What counts as "small"? Random according to what rule? Are all choices equally likely, or are smaller values more likely than larger ones?
+
+Importantly, it is often not good enough to just allow randomness to be "anything unpredictable". We usually need to know the exact rule used to generate the value. That rule tells us which values are possible and how likely each one is.
+
+For example, suppose we choose a number from this set:
+
+$$
+\{0, 1, 2, 3\}
+$$
+
+There are several different ways to do this. We could choose each value with equal probability, i.e. each value has a probability of being chosen of $1/4$. Or we could choose smaller values more often:
+$$
+0 \rightarrow 1/2\\
+1 \rightarrow 1/4\\
+2 \rightarrow 1/8\\
+3 \rightarrow 1/8
+$$
+
+Both are random but they are not the same kind of randomness. The first rule is uniform. The second rule is biased toward smaller values.
+
+The name for this rule is a distribution. A distribution tells us how likely each value is. For a finite set, this means assigning a probability to each possible value. For example:
+
+$$
+x \leftarrow \{0, 1, 2, 3\}
+$$
+
+This notation is often used informally to mean "sample $x$ uniformly from the set $\{0, 1, 2, 3\}$". The arrow $\leftarrow$ here means sampling. More explicitly, we can write:
+
+$$
+x \leftarrow U(\{0, 1, 2, 3\})
+$$
+
+Here, $U$ means the uniform distribution over the set. That means every value in the set has the same probability of being chosen. So in this example:
+
+$$
+\Pr[x = 0] = \Pr[x = 1] = \Pr[x = 2] = \Pr[x = 3] = \frac{1}{4}
+$$
+
+Where $\Pr[x = 0]$ is the probability that $x$ equals $0$.
+
+The important point is that the distribution is part of the definition of the sampling process. Saying "choose a random value" is incomplete until we know the distribution.
+
+## Uniform sampling
+
+Uniform sampling means every allowed value is equally likely. If we sample uniformly from:
+
+$$
+\{0, 1, 2, 3, 4, 5, 6, 7\}
+$$
+
+then each value has probability:
+
+$$
+\frac{1}{8}
+$$
+
+because there are eight possible values. In lattice cryptography, we often sample uniformly modulo some integer $q$. For example:
+
+$$
+a \leftarrow \mathbb{Z}_{17}
+$$
+
+This looks abstract but it just means "sample $a$ uniformly from the integers modulo $17$". We write $\mathbb{Z}_{17}$ for the set of residues modulo $17$, which from the previous chapter are:
+
+$$
+\{0, 1, 2, \ldots, 16\}
+$$
+
+So each value has probability $1/17$.
+
+We discussed this in detail in the previous chapter, but as a reminder this is common in lattice schemes because many computations happen modulo $q$. A public matrix or public vector is often sampled uniformly modulo $q$. For example:
+
+$$
+A \leftarrow \mathbb{Z}_q^{n \times m}
+$$
+
+Again, this looks complex but it just means "sample an $n \times m$ matrix $A$, where each entry is chosen uniformly from $\mathbb{Z}_q$".
+
+The notation $\mathbb{Z}_q^{n \times m}$ means the set of all $n \times m$ matrices whose entries are in $\mathbb{Z}_q$.
+
+If $q = 17$, $n = 2$, and $m = 3$, one possible sample is:
+
+$$
+A =
+\begin{bmatrix}
+4 & 16 & 2 \\
+7 & 0 & 11
+\end{bmatrix}
+$$
+
+We also regularly need to generate a small secret or a small error. To do this, we simply sample from a smaller set. For example:
+
+$$
+s \leftarrow U(\{-1, 0, 1\})
+$$
+
+## Small random vectors
+
+The previous chapters covered vectors, coefficients, and shortness. Sampling now gives us a way to generate those objects.
+
+For example:
+
+$$
+s \leftarrow U(\{-1, 0, 1\}^4)
+$$
+
+Read this as "sample a length-$4$ vector $s$, where each coefficient is chosen uniformly from $\{-1, 0, 1\}$".
+
+One possible sample is:
+
+$$
+s =
+\begin{bmatrix}
+1 \\
+0 \\
+-1 \\
+1
+\end{bmatrix}
+$$
+
+
+This is a small random vector because each coefficient is random and each coefficient is restricted to a small range.
+
+The notation $\{-1, 0, 1\}^4$ means the set of all length-$4$ vectors whose coefficients are in $\{-1, 0, 1\}$. There are $3^4 = 81$ possible vectors. If the sampling is uniform, each vector has probability:
+
+$$
+\frac{1}{81}
+$$
+
+In real schemes, the coefficient distribution may be different, but the structure is the same: sample the vector coefficient by coefficient.
+
+## Where this appears in lattice cryptography
+
+We will cover LWE properly in a later chapter, but it is useful to see where the sampling notation appears. A simplified LWE-style equation looks like:
+
+$$
+b = A s + e \pmod q
+$$
+
+Here:
+
+- $A$ is a public matrix and sampled uniformly modulo $q$
+- $s$ is the secret vector and is usually small
+- $e$ is the error vector and is also small
+- $b$ is the resulting vector modulo $q$
+
+## Uniform small sampling is not the only option
+
+So far, the examples used uniform sampling from a small set. For example:
+
+$$
+s \leftarrow U(\{-1, 0, 1\})
+$$
+
+This gives each value the same probability:
+
+$$
+\Pr[s = -1] = \Pr[s = 0] = \Pr[s = 1] = \frac{1}{3}
+$$
+
+But many lattice schemes use small distributions where values closer to zero are more likely. For example, a distribution might assign probabilities like this:
+
+$$
+\Pr[x = -1] = \frac{1}{4}, \quad
+\Pr[x = 0] = \frac{1}{2}, \quad
+\Pr[x = 1] = \frac{1}{4}
+$$
+
+This distribution still only outputs $-1$, $0$, or $1$, but it is not uniform. It is centered around zero. This sort of distribution can be helpful, for example, we may prefer that errors should be close to zero, and larger errors should be less likely.
+
+## Centered binomial distributions
+
+A simple way to get a centered distribution is to subtract random bits.
+
+Sample two random bits:
+
+$$
+a, b \leftarrow U(\{0, 1\})
+$$
+
+Then define:
+$$
+x = a - b
+$$
+
+There are four possible pairs:
+
+| $a$ | $b$ | $x = a - b$ |
+|---:|---:|---:|
+| $0$ | $0$ | $0$ |
+| $0$ | $1$ | $-1$ |
+| $1$ | $0$ | $1$ |
+| $1$ | $1$ | $0$ |
+
+So the output probabilities are:
+
+| Value | Probability |
+|---:|---:|
+| $-1$ | $1/4$ |
+| $0$ | $1/2$ |
+| $1$ | $1/4$ |
+
+This gives a small signed value centered around zero. A wider version uses more bits. For example, sample four random bits:
+
+$$
+a_1, a_2, b_1, b_2 \leftarrow U(\{0, 1\})
+$$
+
+and define:
+
+$$
+x = (a_1 + a_2) - (b_1 + b_2)
+$$
+
+Now $x$ can be:
+
+$$
+-2, -1, 0, 1, 2
+$$
+
+The values near zero are more likely than the values near $-2$ or $2$. This is the basic idea behind a centered binomial distribution. In cryptographic specifications, you may see notation like:
+
+$$
+x \leftarrow \mathrm{CBD}_\eta
+$$
+
+Read this as "sample $x$ from a centered binomial distribution with parameter $\eta$". The parameter $\eta$ controls how many random bits are summed on each side. The output range is from $-\eta$ to $\eta$.
+
+For example, when $\eta = 2$:
+
+$$
+x = (a_1 + a_2) - (b_1 + b_2)
+$$
+
+When $\eta = 3$:
+
+$$
+x = (a_1 + a_2 + a_3) - (b_1 + b_2 + b_3)
+$$
+
+So $\mathrm{CBD}_2$ outputs values from $-2$ to $2$, while $\mathrm{CBD}_3$ outputs values from $-3$ to $3$. The output is still small, but it is not uniform. Values near zero are more likely.
+
+## Gaussian-shaped noise
+
+Another family of small distributions is Gaussian-shaped noise. A Gaussian distribution is centered around a value, usually zero. Values close to the center are more likely. Values far from the center are less likely. In lattice cryptography, we usually need integer outputs, so the relevant version is often a discrete Gaussian. A discrete Gaussian outputs integers:
+
+$$
+\ldots, -3, -2, -1, 0, 1, 2, 3, \ldots
+$$
+
+with probabilities that shrink as the absolute value grows. So $0$ is most likely, $-1$ and $1$ are less likely, $-2$ and $2$ are less likely again, and so on.
+
+Centered binomial distributions and discrete Gaussians have a similar shape: both are centered around zero and make larger absolute values less likely. However, they are not interchangeable. A centered binomial distribution has a fixed bounded range. A discrete Gaussian usually has tails, so larger values remain possible, just unlikely. The exact choice affects security proofs, implementation cost, side-channel risk, and failure probability.
+
+In implementations, these samples come from cryptographic randomness. The sampler turns random bytes into values with the required distribution. Getting that sampler right is important, because bias, timing leakage, or rejection-sampling mistakes can change the distribution the scheme relies on.
+
+## What to remember
+
+- A distribution tells us how random values are sampled.
+- Uniform sampling means every allowed value is equally likely.
+- Lattice schemes often sample public values uniformly modulo $q$.
+- Small secrets and small errors are sampled from distributions that produce small values.
+- A small random vector is usually sampled coefficient by coefficient.
+- Uniform small sampling is simple, but not the only option.
+- Centered binomial distributions make values near zero more likely.
+- Discrete Gaussian distributions also produce values centered around zero.

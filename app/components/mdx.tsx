@@ -138,9 +138,21 @@ function createHeading(level: number) {
       `h${level}`,
       {
         id: slug,
-        className: `${sizeClasses[level]} font-semibold tracking-tight`,
+        className: `${sizeClasses[level]} font-semibold tracking-tight group scroll-mt-24`,
       },
-      children,
+      <a
+        href={`#${slug}`}
+        className="heading-anchor no-underline hover:underline"
+        aria-label={`Link to section ${nodeToText(children)}`}
+      >
+        {children}
+        <span
+          aria-hidden="true"
+          className="ml-2 text-muted opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          #
+        </span>
+      </a>,
     );
   };
 

@@ -198,6 +198,11 @@
         text-decoration-thickness: 1px;
     }
 
+    .prose a.heading-anchor,
+    .prose a.heading-anchor:hover {
+        color: inherit;
+    }
+
     .prose code:not(pre code) {
         background-color: hsl(var(--code-background));
         color: hsl(var(--code-foreground));

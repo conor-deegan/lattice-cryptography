@@ -2,13 +2,13 @@
 title: 'Modular arithmetic and wraparound'
 publishedAt: '2026-05-14'
 summary: 'Arithmetic mod q, centered representatives, and why "near 0" or "near q/2" matters.'
-chapter: '4'
+chapter: '6'
 status: 'published'
 ---
 
 # Modular arithmetic and wraparound
 
-Modulo arithmetic means arithmetic inside a fixed range. If the modulus is $q = 7$, then every integer reduced modulo $7$ lands in one of these values:
+Modular arithmetic means arithmetic inside a fixed range. If the modulus is $q = 7$, then every integer reduced modulo $7$ lands in one of these values:
 
 $$
 0, 1, 2, 3, 4, 5, 6
@@ -16,7 +16,7 @@ $$
 
 This should be familiar if you have done any programming: `a mod q` gives a remainder between `0` and `q - 1`.
 
-In lattice cryptography is not the modulo operation itself that really matters, it's how we reason about values after they have wrapped around. In normal programming, it is often enough to know the result is inside the range. In lattice cryptography, we often need to ask another question:
+In lattice cryptography it is not the modulo operation itself that really matters, it is how we reason about values after they have wrapped around. In normal programming, it is often enough to know the result is inside the range. In lattice cryptography, we often need to ask another question:
 
 > How far is this modular value from zero?
 
@@ -54,7 +54,7 @@ $$
 -1 \bmod 7 = 6
 $$
 
-because $-1$ is one step below $0$, and modulo $7$ that lands on $6$. So modulo arithmetic keeps values inside a fixed range. Values do not keep growing forever, they wrap back into the range $0$ to $q - 1$.
+because $-1$ is one step below $0$, and modulo $7$ that lands on $6$. So modular arithmetic keeps values inside a fixed range. Values do not keep growing forever, they wrap back into the range $0$ to $q - 1$.
 
 ## Same value, different integers
 
@@ -159,7 +159,7 @@ For $q = 7$:
 | $3$ | $3$ | $3$ |
 | $4$ | $-3$ | $3$ |
 
-It should now be obvious that the values closest to $0$ modulo $7$ are:
+From the table, the values closest to $0$ modulo $7$ are:
 
 $$
 0, 1, 6
@@ -218,31 +218,24 @@ So, in summary:
 - after reduction to the standard range, values near $q$ represent small negative values,
 - values near $q/2$ are far from $0$.
 
-## Why this matters later
+## Decoding by distance from zero
 
-Lattice schemes do a lot of arithmetic modulo $q$, and many correctness arguments depend on some value being "small". That value might be:
-
-- an error term,
-- a noise term,
-- a rounding difference,
-- a compression difference.
-
-For example, a toy decoding rule might be:
+Here is a small example of why distance from $0$ matters. Suppose we have a rule for turning a modular value back into a bit:
 
 - values near $0$ decode as $0$,
 - values near $q/2$ decode as $1$.
 
-If a value meant to be $0$ becomes $1$ due to some noise in the system, it is still close to $0$ so will decode correctly. If we are working modulo $17$ and it becomes $16$, it is also still close to $0$ and will decode correctly, because:
+If a value meant to be $0$ shifts to $1$, it is still close to $0$ and decodes correctly. Working modulo $17$, if it shifts to $16$ it also decodes correctly, because:
 
 $$
 16 \equiv -1 \pmod {17}
 $$
 
-But if it moves near $8$ or $9$, it is no longer close to $0$. It is near $q/2$ and a decoder may now interpret it as the wrong value. That is an example of a decryption failure: the arithmetic modulo $q$ is still correct, but the value has crossed a decoding boundary.
+But if it moves near $8$ or $9$, it is no longer close to $0$. It is near $q/2$, and the rule above would decode it as the wrong bit. The arithmetic modulo $q$ is still correct; the value has crossed a decoding boundary.
 
 ## Vectors modulo $q$
 
-As we discussed, lattice schemes usually work with vectors and matrices, not single numbers. When we have a vector modulo $q$, we just mean that it has entries that are each interpreted modulo $q$. For example:
+A vector modulo $q$ has entries that are each interpreted modulo $q$. For example:
 
 $$
 x = (16, 2, 9) \pmod {17}
@@ -268,7 +261,7 @@ $$
 (-1, 2, -8)
 $$
 
-Now we can use the same norm ideas from the previous chapter. If we care about the largest coefficient, we use the infinity norm. First take the absolute value of each centered coefficient:
+Now we can use the same norm ideas from chapter 2. If we care about the largest coefficient, we use the infinity norm. First take the absolute value of each centered coefficient:
 
 $$
 |-1| = 1,\quad |2| = 2,\quad |-8| = 8
@@ -280,11 +273,11 @@ $$
 \|x\|_\infty = 8
 $$
 
-This tells us that $x$ has one coefficient that is far from $0$ modulo $17$ and that coefficient is $9$ in standard form. So although $16$ may look large in the standard range, it is actually small after centering. The coefficient $9$ is the problem if we are trying to keep every coefficient of the vector close to $0$ (which will be very important later).
+This tells us that $x$ has one coefficient that is far from $0$ modulo $17$ and that coefficient is $9$ in standard form. So although $16$ may look large in the standard range, it is actually small after centering. The coefficient $9$ is the problem if we are trying to keep every coefficient of the vector close to $0$.
 
 ## What to remember
 
-- Modulo arithmetic keeps values inside a fixed range: $0$ to $q - 1$.
+- Modular arithmetic keeps values inside a fixed range: $0$ to $q - 1$.
 - Different integers can land in the same modular value.
 - The standard representative is the usual value in the range $0, 1, ..., q - 1$.
 - When reasoning about size, we usually care about signed distance from $0$.
@@ -293,4 +286,3 @@ This tells us that $x$ has one coefficient that is far from $0$ modulo $17$ and 
 - A modular value is small if its centered representative has small absolute value.
 - After reduction to the standard range, values near $q$ represent small negative values.
 - Values near $q/2$ are far from $0$.
-- Lattice schemes use this when reasoning about errors, noise, rounding differences, compression differences, decoding, and failures.

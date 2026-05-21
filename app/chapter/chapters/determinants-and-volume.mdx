@@ -1,0 +1,23 @@
+---
+title: 'Determinants and volume'
+publishedAt: '2026-05-20'
+summary: 'A single number from a matrix that tells you how much space its columns enclose - the key quantity for measuring lattices.'
+chapter: '5'
+status: 'draft'
+---
+
+Take two vectors in the plane. They mark out a parallelogram. Take three vectors in 3D and they mark out a slanted box. The *determinant* of the matrix whose columns are those vectors is a single number that tells you the volume of that shape.
+
+That single number turns out to be one of the most important quantities in lattice cryptography. The volume of a lattice's fundamental region, how dense the lattice is, how short its shortest vector can possibly be, how hard it is to find that shortest vector - all of these are tied back to a determinant.
+
+By the end of this chapter, you should understand what a determinant measures geometrically, why |det B| is the volume of the parallelepiped spanned by the columns of B, why the determinant is the same no matter which basis you choose for the same lattice, and why "volume" is the unit we'll use throughout the rest of this course.
+
+## TODO
+
+- Two vectors in 2D: the parallelogram and its signed area.
+- Three vectors in 3D: the parallelepiped.
+- Definition: |det B| = volume of the parallelepiped spanned by the columns of B.
+- Sign of the determinant: orientation, why we'll usually take absolute value.
+- Linear dependence ↔ determinant is zero ↔ collapsed volume.
+- Preview: different bases of the same lattice have the same |det|. This is the invariant we'll lean on later.
+- Worked example: compute |det B| for a tiny 2×2 basis by hand.

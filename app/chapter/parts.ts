@@ -1,5 +1,5 @@
 // Logical groupings of chapters shown on the homepage and side nav.
-// Parts are UI-only — they are not clickable and do not have pages.
+// Parts are UI-only - they are not clickable and do not have pages.
 // To re-order, rename, add, or remove a part, edit this list.
 
 export type Part = {
@@ -9,25 +9,23 @@ export type Part = {
 };
 
 export const parts: readonly Part[] = [
-  { title: "Part 1: The tools you need before lattices", range: [1, 5] },
-  { title: "Part 2: Lattices from first principles", range: [6, 12] },
-  { title: "Part 3: The hard problems", range: [13, 16] },
+  { title: "Part 1: The maths you need before lattices", range: [1, 7] },
+  { title: "Part 2: Lattices from first principles", range: [8, 13] },
+  { title: "Part 3: The hard problems", range: [14, 17] },
+  { title: "Part 4: q-ary lattices and the dual", range: [18, 20] },
+  { title: "Part 5: SIS, the short relation problem", range: [21, 23] },
+  { title: "Part 6: LWE, the noisy equation problem", range: [24, 28] },
+  { title: "Part 7: How lattices actually break", range: [29, 31] },
   {
-    title: "Part 4: q-ary lattices, the bridge into real crypto",
-    range: [17, 18],
+    title: "Part 8: Structure - polynomials, rings, modules",
+    range: [32, 37],
   },
-  { title: "Part 5: SIS, the short relation problem", range: [19, 21] },
-  { title: "Part 6: LWE, the noisy equation problem", range: [22, 26] },
-  { title: "Part 7: Rings and modules", range: [27, 30] },
-  { title: "Part 8: ML-KEM and key encapsulation", range: [31, 32] },
-  { title: "Part 9: ML-DSA and lattice signatures", range: [33, 36] },
+  { title: "Part 9: ML-KEM and key encapsulation", range: [38, 39] },
+  { title: "Part 10: ML-DSA and Fiat-Shamir signatures", range: [40, 43] },
+  { title: "Part 11: Falcon - hash-and-sign signatures", range: [44, 46] },
   {
-    title: "Part 10: Falcon and NTRU",
-    range: [37, 40],
-  },
-  {
-    title: "Part 11: Attacks, parameters, and implementation",
-    range: [41, 45],
+    title: "Part 12: Shipping it - implementation and migration",
+    range: [47, 48],
   },
 ];
 
