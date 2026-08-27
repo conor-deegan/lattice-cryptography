@@ -7,13 +7,10 @@ export default function Page() {
       <section>
         <div className="mb-12 space-y-4">
           <h1 className="text-2xl font-semibold tracking-tight leading-tight mb-4">
-            Lattice Cryptography for Applied Cryptographers
+            Lattice Cryptography
           </h1>
           <p>
-            A plain-language course on lattices and lattice cryptography,
-            written for applied cryptographers, protocol engineers, and software
-            engineers who want to understand how modern post-quantum schemes
-            work under the hood.
+            Learn lattice cryptography and understand how modern post-quantum schemes work under the hood.
           </p>
           <p>
             The course starts with the background maths and builds up slowly:
