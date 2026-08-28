@@ -46,7 +46,7 @@ Read this as "x is the vector with entries 3 and 4".
 A vector can have two entries, three entries, or thousands of entries.
 
 $$
-x = (x1, x2, ..., xn)
+x = (x_1, x_2, ..., x_n)
 $$
 
 Again, you can read this as "x is a vector with n entries. The entries are called x1, x2, up to xn". The ... means "continue the same pattern". We will see this a lot as lattice cryptography usually works with vectors that are far too large to write out fully.
@@ -89,7 +89,7 @@ $$
 In notation, we write this as:
 
 $$
-||x|| = 5
+\|x\| = 5
 $$
 
 which you can read as "the norm of x is 5" or more simply "the length of x is 5". Generally, the double bars ||x|| mean "the length of the vector x".
@@ -98,25 +98,25 @@ which you can read as "the norm of x is 5" or more simply "the length of x is 5"
 
 The most common vector length is called the Euclidean norm. It is the normal straight-line distance you already know from geometry.
 
-For a two-entry vector $x = (x1, x2)$ the Euclidean norm is $||x|| = \sqrt{x1² + x2²}$
+For a two-entry vector $x = (x_1, x_2)$ the Euclidean norm is $\|x\| = \sqrt{x_1² + x_2²}$
 
 ## Length in more than two dimensions
 
 The same rule works for longer vectors. For a three-entry vector $x = (2, 3, 6)$ the Euclidean norm is:
 
 $$
-||x|| = \sqrt{2² + 3² + 6²}\\
+\|x\| = \sqrt{2² + 3² + 6²}\\
       = \sqrt{4 + 9 + 36}\\
       = \sqrt{49}\\
       = 7
 $$
 
-So $||(2, 3, 6)|| = 7$
+So $\|(2, 3, 6)\| = 7$
 
-For a vector with n entries $x = (x1, x2, ..., xn)$ the Euclidean norm is
+For a vector with n entries $x = (x_1, x_2, ..., x_n)$ the Euclidean norm is
 
 $$
-||x|| = \sqrt{x1² + x2² + ... + xn²}
+\|x\| = \sqrt{x_1² + x_2² + ... + x_n²}
 $$
 
 ## Squared length
@@ -124,7 +124,7 @@ $$
 Sometimes cryptographers work with the squared norm instead:
 
 $$
-||x||² = x1² + x2² + ... + xn²
+\|x\|² = x_1² + x_2² + ... + x_n²
 $$
 
 You can read this as "the squared length of x is the sum of the squared entries". This avoids taking a square root at the end and for many checks, comparing the squared lengths is enough. For example, suppose you want to check whether $\|x\| \leq 10$. You can instead check $\|x\|^2 \leq 100$. This is often easier in code.

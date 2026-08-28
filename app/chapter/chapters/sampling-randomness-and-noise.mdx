@@ -176,11 +176,11 @@ $$
 \Pr[x = 1] = \frac{1}{4}
 $$
 
-This distribution still only outputs $-1$, $0$, or $1$, but it is not uniform. It is centered around zero. This sort of distribution can be helpful, for example, we may prefer that errors should be close to zero, and larger errors should be less likely.
+This distribution still only outputs $-1$, $0$, or $1$, but it is not uniform. It is centred around zero. This sort of distribution can be helpful, for example, we may prefer that errors should be close to zero, and larger errors should be less likely.
 
-## Centered binomial distributions
+## Centred binomial distributions
 
-A simple way to get a centered distribution is to subtract random bits.
+A simple way to get a centred distribution is to subtract random bits.
 
 Sample two random bits:
 
@@ -210,7 +210,7 @@ So the output probabilities are:
 | $0$ | $1/2$ |
 | $1$ | $1/4$ |
 
-This gives a small signed value centered around zero. A wider version uses more bits. For example, sample four random bits:
+This gives a small signed value centred around zero. A wider version uses more bits. For example, sample four random bits:
 
 $$
 a_1, a_2, b_1, b_2 \leftarrow U(\{0, 1\})
@@ -228,13 +228,13 @@ $$
 -2, -1, 0, 1, 2
 $$
 
-The values near zero are more likely than the values near $-2$ or $2$. This is the basic idea behind a centered binomial distribution. In cryptographic specifications, you may see notation like:
+The values near zero are more likely than the values near $-2$ or $2$. This is the basic idea behind a centred binomial distribution. In cryptographic specifications, you may see notation like:
 
 $$
 x \leftarrow \mathrm{CBD}_\eta
 $$
 
-Read this as "sample $x$ from a centered binomial distribution with parameter $\eta$". The parameter $\eta$ controls how many random bits are summed on each side. The output range is from $-\eta$ to $\eta$.
+Read this as "sample $x$ from a centred binomial distribution with parameter $\eta$". The parameter $\eta$ controls how many random bits are summed on each side. The output range is from $-\eta$ to $\eta$.
 
 For example, when $\eta = 2$:
 
@@ -252,7 +252,7 @@ So $\mathrm{CBD}_2$ outputs values from $-2$ to $2$, while $\mathrm{CBD}_3$ outp
 
 ## Gaussian-shaped noise
 
-Another family of small distributions is Gaussian-shaped noise. A Gaussian distribution is centered around a value, usually zero. Values close to the center are more likely. Values far from the center are less likely. In lattice cryptography, we usually need integer outputs, so the relevant version is often a discrete Gaussian. A discrete Gaussian outputs integers:
+Another family of small distributions is Gaussian-shaped noise. A Gaussian distribution is centred around a value, usually zero. Values close to the centre are more likely. Values far from the centre are less likely. In lattice cryptography, we usually need integer outputs, so the relevant version is often a discrete Gaussian. A discrete Gaussian outputs integers:
 
 $$
 \ldots, -3, -2, -1, 0, 1, 2, 3, \ldots
@@ -260,7 +260,7 @@ $$
 
 with probabilities that shrink as the absolute value grows. So $0$ is most likely, $-1$ and $1$ are less likely, $-2$ and $2$ are less likely again, and so on.
 
-Centered binomial distributions and discrete Gaussians have a similar shape: both are centered around zero and make larger absolute values less likely. However, they are not interchangeable. A centered binomial distribution has a fixed bounded range. A discrete Gaussian usually has tails, so larger values remain possible, just unlikely. The exact choice affects security proofs, implementation cost, side-channel risk, and failure probability.
+Centred binomial distributions and discrete Gaussians have a similar shape: both are centred around zero and make larger absolute values less likely. However, they are not interchangeable. A centred binomial distribution has a fixed bounded range. A discrete Gaussian usually has tails, so larger values remain possible, just unlikely. The exact choice affects security proofs, implementation cost, side-channel risk, and failure probability.
 
 In implementations, these samples come from cryptographic randomness. The sampler turns random bytes into values with the required distribution. Getting that sampler right is important, because bias, timing leakage, or rejection-sampling mistakes can change the distribution the scheme relies on.
 
@@ -272,5 +272,5 @@ In implementations, these samples come from cryptographic randomness. The sample
 - Small secrets and small errors are sampled from distributions that produce small values.
 - A small random vector is usually sampled coefficient by coefficient.
 - Uniform small sampling is simple, but not the only option.
-- Centered binomial distributions make values near zero more likely.
-- Discrete Gaussian distributions also produce values centered around zero.
+- Centred binomial distributions make values near zero more likely.
+- Discrete Gaussian distributions also produce values centred around zero.
