@@ -3,369 +3,210 @@ title: 'What is a lattice?'
 publishedAt: '2026-05-14'
 summary: 'A lattice is all integer combinations of basis vectors.'
 chapter: '8'
-status: 'draft'
+status: 'published'
 ---
 
-Define a lattice as all integer combinations of basis vectors. Start with the normal 2D grid, then show skewed grids, then move to n dimensions. The key idea is that integer combinations give a discrete grid, while real combinations fill space.
+Chapter 4 ended with a set of linearly independent vectors and every point you could reach from them. If the coefficients are allowed to be any real numbers, those vectors reach every point in the space they span. Nothing is left out, and there are no gaps.
 
+A lattice comes from making one change to that setup: the coefficients have to be integers. You can take three copies of a vector, or minus one copy, but not half a copy. That single restriction turns a continuous space into a set of separated points.
 
-## SOME MATHS HELP FOR 6 & 7
+By the end of this chapter, you should understand what a lattice is, how a basis generates one, how to read $L(B) = \{Bz : z \in \mathbb{Z}^n\}$, and why the basis vectors have to be linearly independent.
 
-Read $\mathbb{Z}^2$ as "pairs of integers". The symbol $\mathbb{Z}$ means the integers, and the superscript $2$ means each point has two coordinates.
+## The integer grid
 
-OR 
+The simplest lattice is the one you have already drawn on graph paper: the points whose coordinates are whole numbers.
 
-Read $\mathbb{Z}^2$ as "integer pairs": points $(x,y)$ where both $x$ and $y$ are integers.
-
-Read $\mathbb{Z}^n$ as "integer vectors with $n$ coordinates". For example, $\mathbb{Z}^2$ has pairs like $(3,2)$, and $\mathbb{Z}^3$ has triples like $(3,2,5)$.
-
-Read $z_i \in \mathbb{Z}$ as "$z_i$ is an integer". So $z_i$ can be negative, zero, or positive, but not fractional.
-
-Read $\{(x,y):x,y\in\mathbb{Z}\}$ as "the set of all pairs $(x,y)$ where $x$ and $y$ are integers".
-
-Read this as: "$L(B)$ is the set of every point you get by multiplying the basis matrix $B$ by an integer vector $z$".
-
-The vertical bars just mean "put these vectors next to each other as columns". So $B=[b_1\mid b_2]$ is the matrix whose first column is $b_1$ and second column is $b_2$.
-
-The $\sum$ symbol means "add these terms up". So $\sum_{i=1}^{n} z_i b_i$ means $z_1b_1+z_2b_2+\cdots+z_nb_n$.
-
-Whenever we introduce notation, we should immediately give the "read this as..." version once. If the notation appeared in the earlier maths toolkit, still give a short reminder the first time it appears in a lattice chapter.
-
-
-A lattice is a discrete grid of points.
-
-The simplest example is the normal 2D integer grid:
-
-$$
-\mathbb{Z}^2 = \{(x,y) : x,y \in \mathbb{Z}\}
-$$
-
-This is the set of all points whose coordinates are integers:
-
-$$
-(0,0), (1,0), (0,1), (2,3), (-4,7), \ldots
-$$
-
-You can draw it as dots on graph paper.
-
-[Diagram: draw the standard 2D integer grid. Show dots at integer coordinates. Highlight $(0,0)$, $(1,0)$, and $(0,1)$.]
-
-This is a lattice.
-
-But lattices do not have to be square. They can be stretched, slanted, or rotated. The defining idea is not the the grid. The defining idea is how the points are generated.
-
-## Start with basis vectors
-
-Take two vectors:
-
-$$
-b_1 = (1,0)
-$$
-
-$$
-b_2 = (0,1)
-$$
-
-These are the standard basis vectors for the 2D integer grid.
-
-The vector $b_1$ points one unit to the right.
-
-The vector $b_2$ points one unit up.
-
-Now take integer combinations of these vectors:
-
 $$
-z_1b_1 + z_2b_2
+\mathbb{Z}^2 = \{(x, y) : x, y \in \mathbb{Z}\}
 $$
 
-where $z_1$ and $z_2$ are integers.
+Read $\mathbb{Z}$ as "the integers", so $\ldots, -2, -1, 0, 1, 2, \ldots$ including the negatives and zero. Read the superscript as the number of coordinates, so $\mathbb{Z}^2$ is pairs of integers and $\mathbb{Z}^3$ is triples. Read the whole line as "the set of all pairs $(x, y)$ where both $x$ and $y$ are integers".
 
-For example:
-
-$$
-3b_1 + 2b_2 = 3(1,0) + 2(0,1)
-$$
-
-$$
-= (3,0) + (0,2)
-$$
+Points like $(0,0)$, $(3,2)$ and $(-4,7)$ are in $\mathbb{Z}^2$. Points like $(0.5, 1)$ are not.
 
-$$
-= (3,2)
-$$
+<Lattice
+  basis={[[1, 0], [0, 1]]}
+  range={4}
+  caption="The lattice Z^2. Every dot is a point with whole-number coordinates, and the two arrows are the basis vectors b_1 = (1, 0) and b_2 = (0, 1)."
+/>
 
-Another example:
+That picture is a lattice, but the dots are not what defines it. What defines a lattice is how the points are generated.
 
-$$
--1b_1 + 4b_2 = -1(1,0) + 4(0,1)
-$$
+## Integer combinations of basis vectors
 
-$$
-= (-1,0) + (0,4)
-$$
+Take the two vectors drawn in the diagram:
 
 $$
-= (-1,4)
+b_1 = (1, 0), \quad b_2 = (0, 1)
 $$
-
-The integers $z_1$ and $z_2$ tell us how many copies of each basis vector to use. A negative integer means we use the vector in the opposite direction.
-
-With $b_1=(1,0)$ and $b_2=(0,1)$, all integer combinations give exactly $\mathbb{Z}^2$.
-
-## Integer combinations are the important part
 
-The word "integer" is doing real work.
+A linear combination of these is $z_1 b_1 + z_2 b_2$, exactly as in chapter 4. The new rule is that $z_1$ and $z_2$ must be integers. We call this an **integer combination**.
 
-If we only allow integer coefficients, we get separated points:
+Two examples:
 
 $$
-(0,0), (1,0), (0,1), (3,2), (-1,4), \ldots
+3 b_1 + 2 b_2 = 3(1,0) + 2(0,1) = (3,0) + (0,2) = (3,2)
 $$
 
-If we allow real coefficients, we get the whole plane.
-
-For example:
-
 $$
-0.5b_1 + 0.25b_2 = 0.5(1,0) + 0.25(0,1)
+-1 b_1 + 4 b_2 = -1(1,0) + 4(0,1) = (-1,0) + (0,4) = (-1,4)
 $$
 
-$$
-= (0.5,0.25)
-$$
+The coefficients say how many copies of each basis vector to use, and a negative coefficient means the vector is used in the opposite direction. Every pair of integers $z_1, z_2$ gives a point of $\mathbb{Z}^2$, and every point of $\mathbb{Z}^2$ comes from exactly one such pair. So the two vectors $b_1$ and $b_2$ generate the whole infinite grid.
 
-That point is not in $\mathbb{Z}^2$. It is between the grid points.
+The point set is infinite, but the description is two vectors.
 
-So:
+## Integers are the whole difference
 
-$$
-\text{integer combinations} \rightarrow \text{a discrete grid}
-$$
+Drop the word "integer" and the object changes completely. With real coefficients you can pick $0.5$ and $0.25$:
 
 $$
-\text{real combinations} \rightarrow \text{a continuous plane}
+0.5 b_1 + 0.25 b_2 = (0.5, 0.25)
 $$
-
-A lattice is built from integer combinations.
 
-[Diagram: side by side. Left: dots from integer combinations. Right: shaded plane from real combinations.]
+That point sits inside one of the squares of the grid rather than on a corner of it. Keep going with other fractions and you fill in every square, which gives the whole plane rather than a set of dots.
 
-## A slanted lattice
-
-Now choose different basis vectors:
-
 $$
-b_1 = (2,0)
+\text{integer coefficients} \rightarrow \text{separated points}
 $$
 
 $$
-b_2 = (1,1)
+\text{real coefficients} \rightarrow \text{the whole plane}
 $$
-
-Again, take all integer combinations:
 
-$$
-z_1b_1 + z_2b_2
-$$
+The gaps are the useful part. Because the points are separated, questions like "which lattice point is nearest to this target?" have a definite answer, and answering them can be hard. In a continuous space the answer is always the target itself, and there is no problem to solve.
 
-Some examples:
+## A lattice that is not the integer grid
 
-$$
-0b_1 + 0b_2 = (0,0)
-$$
+Lattices do not have to be square, and their points do not have to be all the whole-number coordinates. Take a different pair of basis vectors:
 
 $$
-1b_1 + 0b_2 = (2,0)
+b_1 = (2, 0), \quad b_2 = (1, 1)
 $$
 
-$$
-0b_1 + 1b_2 = (1,1)
-$$
+Then work out a few integer combinations:
 
 $$
-1b_1 + 1b_2 = (2,0) + (1,1) = (3,1)
+0 b_1 + 0 b_2 = (0,0)
 $$
 
 $$
-2b_1 + 3b_2 = 2(2,0) + 3(1,1)
+1 b_1 + 0 b_2 = (2,0)
 $$
 
 $$
-= (4,0) + (3,3)
+1 b_1 + 1 b_2 = (2,0) + (1,1) = (3,1)
 $$
 
 $$
-= (7,3)
+2 b_1 + 3 b_2 = (4,0) + (3,3) = (7,3)
 $$
-
-These points form a slanted grid.
-
-[Diagram: draw $b_1=(2,0)$ and $b_2=(1,1)$ from the origin. Draw several lattice points generated by integer combinations. Show the slanted grid.]
-
-This is also a lattice.
-
-It is not the standard integer grid. It is generated by a different basis.
 
-## The 2D definition
+<Lattice
+  basis={[[2, 0], [1, 1]]}
+  range={6}
+  vectors={[{ v: [3, 1], label: "b_1 + b_2", color: "#dc2626" }]}
+  caption="The lattice generated by b_1 = (2, 0) and b_2 = (1, 1). The dots are still evenly spaced and still repeat, but the pattern is slanted and half the whole-number points are missing."
+/>
 
-In 2D, a lattice generated by two basis vectors $b_1$ and $b_2$ is:
+The general point here is $z_1(2,0) + z_2(1,1) = (2z_1 + z_2,\; z_2)$. The first coordinate minus the second is $2z_1$, which is always even, so this lattice contains exactly the whole-number points whose two coordinates are both even or both odd. The point $(3,1)$ is in it and $(3,2)$ is not.
 
-$$
-L = \{z_1b_1 + z_2b_2 : z_1,z_2 \in \mathbb{Z}\}
-$$
+So this is a different lattice from $\mathbb{Z}^2$, sitting inside it, generated by a different basis. Both are lattices for the same reason: each is the full set of integer combinations of two independent vectors.
 
-Read this as:
+## Lattice points can be added and subtracted
 
-> $L$ is the set of all points made by taking integer combinations of $b_1$ and $b_2$.
+One property follows straight from the definition and gets used constantly later. If $u$ and $v$ are both lattice points, then $u + v$ and $u - v$ are lattice points too.
 
-The notation is compact, but the idea is simple. Choose two integers. Multiply the basis vectors by those integers. Add the results. The point you get is in the lattice.
+The reason is that adding two integer combinations just adds their coefficients, and integers are closed under addition and subtraction. In the slanted lattice above, $(2,0)$ and $(3,1)$ are lattice points, and so are $(5,1)$ and $(-1,-1)$. The origin is always a lattice point, obtained by taking every coefficient to be zero.
 
-## The $n$-dimensional definition
+This is what makes a lattice a repeating pattern rather than an arbitrary scatter of dots. The view from any lattice point looks the same as the view from the origin, because you can shift the whole lattice by any lattice point and land back on itself.
 
-In $n$ dimensions, we use $n$ basis vectors:
-
-$$
-b_1, b_2, \ldots, b_n
-$$
+## The definition in $n$ dimensions
 
-A lattice point is:
+Nothing above depended on there being two dimensions. In $n$ dimensions we start from $n$ basis vectors $b_1, b_2, \ldots, b_n$, and a lattice point is any integer combination of them:
 
 $$
-z_1b_1 + z_2b_2 + \cdots + z_nb_n
+z_1 b_1 + z_2 b_2 + \cdots + z_n b_n
 $$
 
-where each $z_i$ is an integer.
+Written as a set, the lattice $L$ generated by those vectors is:
 
-So the lattice is:
-
 $$
-L = \left\{ \sum_{i=1}^{n} z_i b_i : z_i \in \mathbb{Z} \right\}
+L = \left\{ \sum_{i=1}^{n} z_i b_i \;:\; z_i \in \mathbb{Z} \right\}
 $$
-
-This says the same thing as the 2D version, just with more basis vectors.
 
-## Matrix notation
+Read $\sum_{i=1}^{n} z_i b_i$ as "add up $z_1 b_1$ through to $z_n b_n$", and read $z_i \in \mathbb{Z}$ as "each coefficient $z_i$ is an integer". The braces and the colon are the same set notation used for $\mathbb{Z}^2$ above. The part before the colon says what is in the set, and the part after it gives the condition on the coefficients.
 
-It is common to put the basis vectors into a matrix:
-
-$$
-B = [b_1 \mid b_2 \mid \cdots \mid b_n]
-$$
+## The same definition as a matrix
 
-The columns of $B$ are the basis vectors.
+Chapter 3 showed that $Bz$ is a linear combination of the columns of $B$ with coefficients from $z$. That is exactly the sum above, so the whole definition collapses into one matrix product.
 
-Then the integer coefficients are put into a vector:
+Put the basis vectors in as columns:
 
 $$
-z =
-\begin{bmatrix}
-z_1 \\
-z_2 \\
-\vdots \\
-z_n
-\end{bmatrix}
+B = [\, b_1 \mid b_2 \mid \cdots \mid b_n \,]
 $$
 
-Multiplying $Bz$ gives:
+The vertical bars are only there to show the vectors sit side by side as columns. Stack the coefficients into a vector $z = (z_1, z_2, \ldots, z_n)$, and then:
 
 $$
-Bz = z_1b_1 + z_2b_2 + \cdots + z_nb_n
+Bz = z_1 b_1 + z_2 b_2 + \cdots + z_n b_n
 $$
 
 So the lattice generated by $B$ is written:
 
 $$
-L(B) = \{Bz : z \in \mathbb{Z}^n\}
+L(B) = \{ Bz : z \in \mathbb{Z}^n \}
 $$
 
-This is the same definition.
+Read this as "$L(B)$ is the set of every point $Bz$, as $z$ runs over all integer vectors with $n$ entries". In code it is an ordinary matrix-vector product, with the single restriction that the vector being multiplied has integer entries.
 
-It just uses matrix notation.
+Take care with the two decorations on $\mathbb{Z}$. A superscript counts coordinates, so $\mathbb{Z}^n$ is integer vectors of length $n$. A subscript is the modulus from chapter 6, so $\mathbb{Z}_q$ is the integers modulo $q$. They are unrelated, and both appear once we reach q-ary lattices.
 
-## Basis vectors must be independent
+## The basis vectors must be independent
 
-The basis vectors need to point in independent directions.
-
-In 2D, this means one basis vector must not be a scalar multiple of the other.
-
-These two vectors are independent:
+The basis has to be linearly independent, for the reason chapter 4 gave. Take a pair that is not:
 
 $$
-(1,0), \quad (0,1)
+b_1 = (1, 0), \quad b_2 = (2, 0)
 $$
 
-These are not:
+Every integer combination of these is:
 
 $$
-(1,0), \quad (2,0)
+z_1(1,0) + z_2(2,0) = (z_1 + 2 z_2,\; 0)
 $$
 
-The second vector is just twice the first. Both lie on the same line.
+The second coordinate is always zero, so every point lands on the x-axis. The result is still a set of separated points, but it is a one-dimensional lattice sitting inside two-dimensional space, not a grid filling the plane. From chapter 5, the matrix with these columns has determinant $1 \cdot 0 - 0 \cdot 2 = 0$, which is the algebraic version of the same failure.
 
-Integer combinations of $(1,0)$ and $(2,0)$ only produce points on the x-axis:
+When this course says an $n$-dimensional lattice, it means one generated by $n$ independent vectors in $n$-dimensional space, so $\det B \neq 0$. That is called a **full-rank** lattice, and it is the only case we will need.
 
-$$
-z_1(1,0) + z_2(2,0) = (z_1 + 2z_2, 0)
-$$
-
-The second coordinate is always zero.
-
-So these vectors do not generate a 2D lattice in the plane. They generate a 1D lattice sitting inside 2D space.
-
-[Diagram: draw two collinear vectors on the x-axis. Show that their integer combinations only produce points on a line.]
-
-For this series, when we say an $n$-dimensional lattice, we usually mean a full-rank lattice in $n$-dimensional space. That means it has $n$ independent basis vectors.
-
-## Notation table
+## Notation
 
 | Symbol | Meaning | Example |
 |---|---|---|
-| $\mathbb{Z}$ | The integers | $\ldots,-2,-1,0,1,2,\ldots$ |
-| $\mathbb{Z}^2$ | Pairs of integers | $(3,2)$, $(-1,4)$ |
-| $b_i$ | A basis vector | $b_1=(1,0)$ |
-| $z_i$ | An integer coefficient | $z_1=3$ |
-| $z$ | A vector of integer coefficients | $z=(3,2)$ |
-| $B$ | A matrix whose columns are basis vectors | $B=[b_1 \mid b_2]$ |
-| $Bz$ | An integer combination of the basis vectors | $3b_1+2b_2$ |
-| $L(B)$ | The lattice generated by $B$ | all points $Bz$ for $z\in\mathbb{Z}^n$ |
+| $\mathbb{Z}$ | The integers | $\ldots, -2, -1, 0, 1, 2, \ldots$ |
+| $\mathbb{Z}^n$ | Integer vectors with $n$ entries | $(3, 2) \in \mathbb{Z}^2$ |
+| $b_i$ | A basis vector | $b_1 = (1, 0)$ |
+| $z$ | A vector of integer coefficients | $z = (3, 2)$ |
+| $B$ | The matrix whose columns are the basis vectors | $B = [\, b_1 \mid b_2 \,]$ |
+| $L(B)$ | The lattice generated by $B$ | every $Bz$ with $z \in \mathbb{Z}^n$ |
 
 ## What to remember
 
-A lattice is a discrete grid of points generated by integer combinations of basis vectors.
-
-In 2D:
-
-$$
-L = \{z_1b_1 + z_2b_2 : z_1,z_2 \in \mathbb{Z}\}
-$$
-
-In $n$ dimensions:
-
-$$
-L(B) = \{Bz : z \in \mathbb{Z}^n\}
-$$
-
-Integer coefficients make the lattice discrete.
-
-Real coefficients would fill the surrounding space.
-
-A basis is a compact description of an infinite set of lattice points.
-
-## What can stay fuzzy for now
-
-You do not need to know which lattice problems are hard yet.
-
-You do not need determinants, dual lattices, shortest vectors, or attacks yet.
-
-For now, the main idea is:
-
-> A lattice is all integer combinations of its basis vectors.
+- A lattice is the set of all integer combinations of a set of linearly independent vectors.
+- In $n$ dimensions, $L(B) = \{Bz : z \in \mathbb{Z}^n\}$, where the columns of $B$ are the basis vectors.
+- Integer coefficients are what make the points separated. Real coefficients would fill the space the vectors span.
+- Sums and differences of lattice points are lattice points, and the origin is always a lattice point.
+- A basis is a finite description of an infinite set of points.
+- A basis must be linearly independent, equivalently $\det B \neq 0$. Otherwise the lattice collapses into fewer dimensions.
 
 ## Checkpoint questions
 
-1. What is $\mathbb{Z}^2$?
-2. What does $3b_1 + 2b_2$ mean?
-3. Why do integer combinations give a grid?
-4. What would happen if real coefficients were allowed?
-5. Why do the basis vectors need to be independent?
-6. What does $L(B)=\{Bz:z\in\mathbb{Z}^n\}$ mean in plain English?
+1. What does $\mathbb{Z}^2$ mean, and which of $(2,5)$ and $(2, 0.5)$ is in it?
+2. What is $3b_1 + 2b_2$ when $b_1 = (2,0)$ and $b_2 = (1,1)$?
+3. Why do integer coefficients give separated points while real coefficients do not?
+4. How would you read $L(B) = \{Bz : z \in \mathbb{Z}^n\}$ out loud?
+5. If $u$ and $v$ are lattice points, why is $u - v$ also a lattice point?
+6. What goes wrong if the basis vectors are linearly dependent?
+7. What is the difference between $\mathbb{Z}^n$ and $\mathbb{Z}_q$?

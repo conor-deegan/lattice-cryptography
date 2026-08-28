@@ -15,6 +15,61 @@ export const BANNED_PHRASES = [
   "load-bearing",
 ];
 
+// Narrative signposting: promises that something will matter later, and prose
+// that narrates the course's own structure. The chapter should state the point
+// and move on, so these are errors, matched case-insensitively on the masked
+// body. Present-tense claims about the material at hand are fine and must stay
+// legal: "order matters" and "the choice is important" are not foreshadowing.
+// Each entry is [pattern, hint]; the hint is shown to whoever tripped it.
+export const FORESHADOWING_PATTERNS = [
+  [/\bthe rest of (?:the|this) (?:course|book|series|chapter|part)\b/gi,
+    "do not describe what the rest of the course does"],
+  [/\bthe remainder of (?:the|this) (?:course|book|series|chapter|part)\b/gi,
+    "do not describe what the remainder of the course does"],
+  [/\beverything (?:that )?(?:follows|comes later|comes after)\b/gi,
+    "do not describe what the later material does"],
+  [/\b(?:what|which) (?:we|you) (?:need|want|do|cover) next\b/gi,
+    "do not announce what comes next; just write it"],
+  [/\bwhat comes next\b/gi, "do not announce what comes next; just write it"],
+  [/\bnext up\b/gi, "do not announce what comes next; just write it"],
+  [/\bmore on (?:this|that|it) later\b/gi, "either explain it here or leave it out"],
+  [/\b(?:will|is going to|are going to) matter\b/gi,
+    "do not promise that something will matter later"],
+  [/\bmatters? (?:a lot |even more )?later\b/gi,
+    "do not promise that something will matter later"],
+  [/\b(?:will be|becomes?|is going to be|turns out to be) (?:important|useful|essential|crucial|central|relevant|significant)\b/gi,
+    "do not promise future importance; give the reason now or cut it"],
+  [/\bas (?:we|you)(?:'ll| will) see\b/gi, "state the point where it belongs instead"],
+  [/\blater (?:we|you)(?:'ll| will)\b/gi, "state the point where it belongs instead"],
+  [/\b(?:we|you)(?:'ll| will) (?:see|meet|need|use|revisit|return to|come back to)\b[^.!?]{0,30}\blater\b/gi,
+    "state the point where it belongs instead"],
+  [/\b(?:we|you)(?:'ll| will) (?:come back to|return to|revisit)\b/gi,
+    "state the point where it belongs instead"],
+  [/\b(?:which|that) (?:we|you)(?:'ll| will) need\b/gi,
+    "do not flag material as needed later"],
+  [/\b(?:will come|comes) (?:up|back) (?:again|later)\b/gi,
+    "do not flag material as returning later"],
+  [/\b(?:keep|bear) (?:this|that|it) in mind\b/gi, "state the point and move on"],
+  [/\bstay tuned\b/gi, "state the point and move on"],
+  [/\b(?:when|before) (?:we|you) (?:get|come) to\b/gi,
+    "do not narrate the reading order of the course"],
+  [/\bsets? (?:up )?the stage\b/gi, "do not narrate the structure of the course"],
+  [/\blays? the groundwork\b/gi, "do not narrate the structure of the course"],
+];
+
+// Softer forward references. A pointer to where something is covered properly
+// is occasionally the honest thing to write, so these warn rather than fail.
+export const FORWARD_REFERENCE_PATTERNS = [
+  [/\b(?:later|future|upcoming|subsequent|following) (?:chapters?|parts?|sections?)\b/gi,
+    "forward reference; prefer stating the point and moving on"],
+  [/\b(?:a|the) (?:next|later|following) (?:chapter|part|section)\b/gi,
+    "forward reference; prefer stating the point and moving on"],
+  [/\bbuilding (?:toward|towards|up to)\b/gi,
+    "narrating the chapter's own structure; prefer stating the point"],
+  [/\bthis chapter (?:will|is going to) \b/gi,
+    "narrating the chapter's own structure; prefer stating the point"],
+];
+
 // American spellings that must be British. Left side is matched case-insensitively
 // on whole words; the suggestion preserves the original capitalisation.
 export const AMERICAN_SPELLINGS = {

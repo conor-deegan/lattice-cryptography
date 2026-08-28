@@ -20,14 +20,16 @@ AGENTS.md                     Next.js version warning, imported by CLAUDE.md
     write-chapter/              draft or revise a chapter
     refine-chapter/             strictly-better edits to an existing chapter
     fact-check-chapter/         verify claims against primary sources, then cite them
+    write-next-chapter/         pick the next unpublished chapter, then write it
   agents/
     chapter-fact-checker.md     reads sources, returns a verdict table, not page dumps
 
 scripts/
   lint-prose.mjs              style linter
   check-sources.mjs           unsourced-claim checker
+  next-chapter.mjs            resolves the next unpublished chapter; also `--summary`
   lib/mdx.mjs                 frontmatter parsing and maths/code masking
-  lib/rules.mjs               banned phrases, spelling lists, name lists
+  lib/rules.mjs               banned phrases, signposting patterns, spelling and name lists
   hooks/
     protect-paths.mjs         PreToolUse: refuses edits to protected files
     post-edit.mjs             PostToolUse: lints the edited chapter, records it
@@ -45,6 +47,7 @@ scripts/
 | How does the site load chapters? | `.claude/rules/site-code.md` |
 | What are the steps to write a chapter? | `.claude/skills/write-chapter/SKILL.md` |
 | Which words are banned? | `scripts/lib/rules.mjs` (and mirrored in the prose rule) |
+| Why does my forward reference fail the linter? | `.claude/rules/chapter-prose.md`, "No signposting or foreshadowing" |
 | What counts as a claim needing a source? | `.claude/skills/fact-check-chapter/reference/claim-triggers.md` |
 | Which source is authoritative? | `.claude/skills/fact-check-chapter/reference/primary-sources.md` |
 
@@ -106,5 +109,6 @@ just lint                                         # prose, all chapters
 just lint app/chapter/chapters/what-is-a-lattice.mdx
 just lint-strict                                  # warnings fail too
 just sources                                      # unsourced claims
+just next                                         # next unpublished chapter
 just status                                       # how much of the course exists
 ```

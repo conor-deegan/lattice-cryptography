@@ -8,7 +8,7 @@ status: 'published'
 
 Lattice cryptography uses a lot of randomness. Keys are sampled, secrets are sampled, errors are sampled, challenges are sampled. Many security statements assume that some values are chosen randomly from a specified set or distribution.
 
-This chapter will explore how we choose random values in a controlled way, so that they are useful for lattice cryptography. This is a little harder than it sounds, for example, a large part of lattice cryptography requires that we "choose a small random vector" but that hides several important details. What does "choose" mean? What counts as "small"? Random according to what rule? Are all choices equally likely, or are smaller values more likely than larger ones?
+Choosing random values in a controlled way, so that they are useful for lattice cryptography, is a little harder than it sounds. For example, a large part of lattice cryptography requires that we "choose a small random vector" but that hides several important details. What does "choose" mean? What counts as "small"? Random according to what rule? Are all choices equally likely, or are smaller values more likely than larger ones?
 
 Importantly, it is often not good enough to just allow randomness to be "anything unpredictable". We usually need to know the exact rule used to generate the value. That rule tells us which values are possible and how likely each one is.
 
@@ -141,7 +141,7 @@ In real schemes, the coefficient distribution may be different, but the structur
 
 ## Where this appears in lattice cryptography
 
-We will cover LWE properly in a later chapter, but it is useful to see where the sampling notation appears. A simplified LWE-style equation looks like:
+This is not a full account of LWE, but it shows where the sampling notation appears. A simplified LWE-style equation looks like:
 
 $$
 b = A s + e \pmod q

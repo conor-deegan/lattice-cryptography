@@ -96,6 +96,62 @@ Enforced by the linter. Never write:
 - "shape of"
 - "load-bearing"
 
+## No signposting or foreshadowing
+
+Enforced by the linter as `prose/foreshadowing` (error) and
+`prose/forward-reference` (warning).
+
+State the point and move on. Do not tell the reader that something will matter
+later, and do not narrate the structure of the course inside the prose. The
+reader can see the table of contents. A sentence whose only job is to announce
+another sentence is padding.
+
+Never write:
+
+- "the rest of the course", "the rest of this chapter", "everything that follows"
+- "what we need next", "what comes next", "next up"
+- "this will matter later", "this will be important", "this becomes useful"
+- "as we will see", "we will come back to this", "more on this later"
+- "keep this in mind", "building toward", "this sets the stage"
+- "when we get to LWE", "before we come to the NTT"
+
+Bad:
+
+> That picture is a lattice, but the dots are not what defines it. What defines a
+> lattice is how the points are generated, and the generating rule is what we
+> need next.
+
+Better:
+
+> That picture is a lattice, but the dots are not what defines it. What defines a
+> lattice is how the points are generated.
+
+Bad:
+
+> Every point of the grid comes from exactly one pair of integers. That is the
+> trade the rest of the course depends on.
+
+Better:
+
+> Every point of the grid comes from exactly one pair of integers. The point set
+> is infinite, but the description is two vectors.
+
+The rule is about the prose talking about itself, not about cross-references.
+These stay fine:
+
+- Back-references, which the continuity rules ask for: "using the norm from
+  chapter 2", "chapter 5 showed that $\det B = 0$ exactly when the columns are
+  dependent".
+- Present-tense claims about the material at hand: "order matters here", "the
+  choice of representative is important when writing constant-time code".
+- Saying plainly what a thing is for, in concrete terms, at the point it is
+  introduced. Give the reason, not a promise of a reason.
+
+Pointing forward to where a topic is covered properly warns rather than fails,
+because it is occasionally the honest thing to write when a chapter has to use a
+term it cannot yet define. Prefer to avoid it. If a forward pointer is the only
+way to be accurate, keep it to a clause and never build a paragraph on it.
+
 ## Spelling and typography
 
 Enforced by the linter.

@@ -35,9 +35,13 @@ dev:
 build:
     @pnpm build
 
+# Which chapter to write next. `just next 5` lists the next five.
+next *count:
+    @node scripts/next-chapter.mjs {{ if count == "" { "" } else { "--list " + count } }}
+
 # Chapter counts by status
 status:
-    @node -e "const {listChapters,readChapter,isStub}=await import('./scripts/lib/mdx.mjs');const c=listChapters().map(x=>({...readChapter(x)}));const w=c.filter(x=>!isStub(x.body));console.log('chapters           ',c.length);console.log('written, published ',w.filter(x=>x.meta.status==='published').length);console.log('written, draft     ',w.filter(x=>x.meta.status!=='published').length);console.log('stubs              ',c.length-w.length);" --input-type=module
+    @node scripts/next-chapter.mjs --summary
 
 # Remove this session's hook bookkeeping
 clean-session:

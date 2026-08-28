@@ -21,6 +21,7 @@ just check        # prose, sources, types, eslint
 just lint         # prose linter, all chapters
 just lint FILE    # prose linter, one chapter
 just sources      # check factual claims are sourced
+just next         # next unpublished chapter
 just status       # chapter counts by status
 ```
 
@@ -29,6 +30,7 @@ just status       # chapter counts by status
 Chapters live in `app/chapter/chapters/` as MDX. Inside Claude Code:
 
 ```
+/write-next-chapter           draft or revise the next unpublished chapter
 /write-chapter <slug>         draft or revise
 /refine-chapter <slug>        tighten an existing chapter
 /fact-check-chapter <slug>    verify claims against primary sources

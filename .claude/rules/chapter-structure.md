@@ -126,11 +126,6 @@ Always include this section. Published chapters fail the linter without it.
 Give a short list of the core ideas. Keep it compact. Do not introduce new ideas
 here. Avoid repeating every detail from the chapter.
 
-## What can stay fuzzy for now
-
-Include only if useful. Tell the reader what they do not need to fully master
-yet. Keep it reassuring but precise.
-
 ## Checkpoint questions
 
 Include only if useful for the chapter. Give 5 to 8 questions that test

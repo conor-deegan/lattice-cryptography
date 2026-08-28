@@ -148,13 +148,13 @@ A useful rule of thumb: in $n$-dimensional space, you can have at most $n$ linea
 
 ## Why this matters for lattices
 
-A lattice in $n$ dimensions is built from a set of $n$ vectors called a **basis**. We have not defined lattices yet, but the requirement on the basis is the one this chapter has been building toward:
+A lattice in $n$ dimensions is built from a set of $n$ vectors called a **basis**. We have not defined lattices yet, but the requirement on the basis is the one linear independence gives us:
 
 > A basis must consist of $n$ linearly independent vectors.
 
 If the basis vectors are linearly dependent, the span is smaller than $n$ dimensions, and the "lattice" collapses onto a lower-dimensional subset. A 2D basis with two collinear vectors describes a 1D lattice on a line, not a 2D grid.
 
-This is also the reason the next chapter cares about the determinant. The determinant of a matrix is zero exactly when its columns are linearly dependent, and non-zero exactly when they are linearly independent. So checking "do these vectors describe a real $n$-dimensional lattice?" is the same as checking "is the determinant non-zero?".
+The determinant of a matrix is zero exactly when its columns are linearly dependent, and non-zero exactly when they are linearly independent. So checking "do these vectors describe a real $n$-dimensional lattice?" is the same as checking "is the determinant non-zero?".
 
 ## What to remember
 

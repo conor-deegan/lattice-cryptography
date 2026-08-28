@@ -40,6 +40,7 @@ just check        # lint prose, check sources, typecheck, eslint
 just lint         # prose linter across every chapter
 just lint FILE    # prose linter on one chapter
 just sources      # unsourced-claim check across every written chapter
+just next         # next unpublished chapter
 just dev          # next dev
 just build        # next build
 ```
@@ -59,6 +60,11 @@ any edit. The full guide is in `.claude/rules/`.
 - **Never use these phrases:** "this is important because", "the key insight is",
   "one might ask", "in essence", "mathematically speaking", "at a high level",
   "shape of", "load-bearing".
+- **No signposting or foreshadowing.** Never tell the reader something will
+  matter later, and never narrate the course's structure: "the rest of the
+  course", "what we need next", "this will be important", "as we will see", "we
+  will come back to this". State the point and move on. Back-references
+  ("using the norm from chapter 2") are fine and encouraged.
 - **Maths notation:** `$...$` inline, `$$...$$` displayed, `\{...\}` for sets,
   `\|x\|` for norms, `\|x\|_\infty` for the infinity norm, `\leq` not `<=`,
   `$x_1$` not `$x1$`.
@@ -104,6 +110,7 @@ a claim to get a check to pass.
 ## Skills
 
 - `/write-chapter <slug>` draft or revise a chapter.
+- `/write-next-chapter` draft or revise the next unpublished chapter, chosen by `just next`.
 - `/refine-chapter <slug>` improve an existing chapter, strictly-better edits only.
 - `/fact-check-chapter <slug>` verify claims against primary sources.
 

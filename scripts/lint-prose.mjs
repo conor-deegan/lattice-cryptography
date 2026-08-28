@@ -16,6 +16,7 @@ import {
 } from "./lib/mdx.mjs";
 import {
   BANNED_PHRASES, AMERICAN_SPELLINGS, IZE_SAFELIST, IZE_PATTERN, PROPER_NOUNS,
+  FORESHADOWING_PATTERNS, FORWARD_REFERENCE_PATTERNS,
 } from "./lib/rules.mjs";
 
 const SENTENCE_MAX = 32;   // words; p99 of the published chapters is 30
@@ -130,6 +131,31 @@ function checkText(file, text, offsetLine, { isFrontmatter = false } = {}) {
     while ((m = re.exec(text)) !== null) {
       report(file, line(m.index), col(m.index), "error", "prose/banned-phrase",
         `banned phrase "${m[0]}"`);
+    }
+  }
+
+  // Narrative signposting. Frontmatter is exempt: a summary legitimately says
+  // what the chapter does, and the ban is about the prose talking about itself.
+  if (!isFrontmatter) {
+    for (const [pattern, hint] of FORESHADOWING_PATTERNS) {
+      pattern.lastIndex = 0;
+      while ((m = pattern.exec(text)) !== null) {
+        report(file, line(m.index), col(m.index), "error", "prose/foreshadowing",
+          `"${m[0]}" signposts later material; ${hint}`);
+      }
+    }
+    // Two patterns can cover the same words ("a later chapter" and "later
+    // chapter"); report the span once.
+    const seen = [];
+    for (const [pattern, hint] of FORWARD_REFERENCE_PATTERNS) {
+      pattern.lastIndex = 0;
+      while ((m = pattern.exec(text)) !== null) {
+        const [start, end] = [m.index, m.index + m[0].length];
+        if (seen.some(([s0, e0]) => start < e0 && end > s0)) continue;
+        seen.push([start, end]);
+        report(file, line(m.index), col(m.index), "warning", "prose/forward-reference",
+          `"${m[0]}": ${hint}`);
+      }
     }
   }
 
